@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.MenuItemCompat;
+
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,15 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import pl.droidsonroids.gif.GifImageView;
@@ -58,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Llenado del ListView
         lvMaterias = findViewById ( R.id.materias_LV );
-        adaptador = new MiAdaptador ( this , materias , grupo , horaInicio , horaFin);
+        adaptador = new MiAdaptador(this, materias, grupo, horaInicio, horaFin);
         lvMaterias.setAdapter( adaptador );
 
         lvMaterias.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -104,12 +99,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // clase adaptador ... Le falta agregar un filter para que funcione el SearchView
-    class MiAdaptador extends ArrayAdapter  {
-        private Context context;
-        private  String [] materias;
-        private  String [] grupo;
-        private  int [] horasIni;
-        private  int [] horasFin;
+    static class MiAdaptador extends ArrayAdapter  {
+        private final Context context;
+        private final String [] materias;
+        private final String [] grupo;
+        private  final int [] horasIni;
+        private final int [] horasFin;
         private List<String> materiasFiltradas;
 
 
