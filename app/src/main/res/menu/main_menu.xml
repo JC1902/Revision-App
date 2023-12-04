@@ -3,13 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/as_Materias"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="Buscar materias"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="ifRoom|collapseActionView" />
-
-    <item
         android:id="@+id/mniAcercaDe"
         android:icon="@drawable/itl"
         android:title="Acerca de.."
