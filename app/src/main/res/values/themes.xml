@@ -3,6 +3,8 @@
     <style name="Base.Theme.ProyectoFinal" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">#D78BFF</item>
+        <item name="colorAccent">#48A0FF</item>
     </style>
 
     <style name="MyFloatingActionButtonStyle" parent="Widget.MaterialComponents.FloatingActionButton">
