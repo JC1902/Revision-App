@@ -73,12 +73,7 @@ public class MainActivity extends AppCompatActivity {
     public void agregarMateria ( View v ) {
         View alertaAgregarMateria = getLayoutInflater().inflate( R.layout.alerta_agregar_materia, null );
 
-        TextView txvTitulo = alertaAgregarMateria.findViewById( R.id.txvTitulo );
-        TextView txvLabNombre = alertaAgregarMateria.findViewById( R.id.txvLabNombre );
-        TextView txvLabGrupo = alertaAgregarMateria.findViewById( R.id.txvLabGrupo );
-        TextView txvLabHora = alertaAgregarMateria.findViewById( R.id.txvLabHora );
-
-        EditText txvNombre = ( EditText ) alertaAgregarMateria.findViewById( R.id.txvNombreMateria );
+        EditText txvNombre = alertaAgregarMateria.findViewById( R.id.txvNombreMateria );
         EditText txvGrupo = alertaAgregarMateria.findViewById( R.id.txvGrupoMateria );
         EditText txvHora = alertaAgregarMateria.findViewById( R.id.txvHoraMateria );
 
