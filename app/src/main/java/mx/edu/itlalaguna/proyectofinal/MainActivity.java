@@ -2,11 +2,13 @@ package mx.edu.itlalaguna.proyectofinal;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,9 +64,42 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // ---- Aqui iria el dirrecionamiento a la materia ----
                 Toast.makeText(MainActivity.this, "Ir a Materia : "+materias[ position ], Toast.LENGTH_SHORT).show();
+
             }
         });
 
+    }
+
+    public void agregarMateria ( View v ) {
+        View alertaAgregarMateria = getLayoutInflater().inflate( R.layout.alerta_agregar_materia, null );
+
+        TextView txvTitulo = alertaAgregarMateria.findViewById( R.id.txvTitulo );
+        TextView txvLabNombre = alertaAgregarMateria.findViewById( R.id.txvLabNombre );
+        TextView txvLabGrupo = alertaAgregarMateria.findViewById( R.id.txvLabGrupo );
+        TextView txvLabHora = alertaAgregarMateria.findViewById( R.id.txvLabHora );
+
+        EditText txvNombre = ( EditText ) alertaAgregarMateria.findViewById( R.id.txvNombreMateria );
+        EditText txvGrupo = alertaAgregarMateria.findViewById( R.id.txvGrupoMateria );
+        EditText txvHora = alertaAgregarMateria.findViewById( R.id.txvHoraMateria );
+
+        AlertDialog.Builder builder = new AlertDialog.Builder( this );
+
+        builder.setView(alertaAgregarMateria)
+                .setIcon( R.drawable.itl )
+                .setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText( MainActivity.this,
+                                        "Materia Agregada",
+                                        Toast.LENGTH_LONG ).show();
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
     }
 
     @Override
@@ -96,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
     public void fabAgregarMaterias ( View v ) {
         //  ---- Aqui va el direccionamienta a nueva materia ----
         Toast.makeText(this, "Crear materia", Toast.LENGTH_SHORT).show();
+        agregarMateria( v );
     }
 
     // clase adaptador ... Le falta agregar un filter para que funcione el SearchView
