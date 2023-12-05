@@ -1,12 +1,5 @@
 package mx.edu.itlalaguna.proyectofinal;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,7 +17,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -51,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         //asingnacion de titulo y toolbar al activity para mostrar el menu
         setTitle( "Materias");
-        androidx.appcompat.widget.Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbarMaterias);
+        androidx.appcompat.widget.Toolbar myToolbar = findViewById(R.id.toolbarMaterias);
         setSupportActionBar(myToolbar);
 
         // Llenado del ListView
@@ -141,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
         private final String [] grupo;
         private  final int [] horasIni;
         private final int [] horasFin;
-        private List<String> materiasFiltradas;
 
 
         public MiAdaptador(Context c , String [] materias ,String[] grupo , int[] horaIni , int[] horasFin){

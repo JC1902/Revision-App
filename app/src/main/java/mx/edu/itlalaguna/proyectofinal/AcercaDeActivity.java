@@ -20,7 +20,7 @@ public class AcercaDeActivity extends AppCompatActivity {
 
         integrantes.append( "\n" + "Jorge Cisneros de la Torre 20130789\n" +
                             "Carlos Fernando Aguilera Garcia 20130811\n" +
-                            "César Gabriel Zamora Morales 20130849\n" +
+                            "Cesar Gabriel Zamora Morales 20130849\n" +
                             "Pedro Sebastián García Favela 20130802\n" +
                             "Shalom Isai Salazar Arguijo 20130805" );
 
