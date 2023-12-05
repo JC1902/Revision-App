@@ -63,7 +63,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // ---- Aqui iria el dirrecionamiento a la materia ----
-                Toast.makeText(MainActivity.this, "Ir a Materia : "+materias[ position ], Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, MateriaActivity.class);
+                intent.putExtra("Nombre", materias[ position ] );
+                startActivity ( intent );
+
+                //Toast.makeText(MainActivity.this, "Ir a Materia : "+materias[ position ], Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -84,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                       // -------- Llamada al metodo "agregarMateria" ---------//
                         Toast.makeText( MainActivity.this,
                                         "Materia Agregada",
                                         Toast.LENGTH_LONG ).show();
@@ -125,8 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void fabAgregarMaterias ( View v ) {
-        //  ---- Aqui va el direccionamienta a nueva materia ----
-        Toast.makeText(this, "Crear materia", Toast.LENGTH_SHORT).show();
+        //  alert de agregar materia
         agregarMateria( v );
     }
 
