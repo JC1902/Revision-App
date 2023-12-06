@@ -23,6 +23,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:orientation="vertical">
 
             <ImageView
@@ -63,6 +64,45 @@
                     android:inputType="text"
                     android:padding="5dp"
                     android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/txvLabApellidoPat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Apellido Paterno:"
+                    android:textColor="#FF0000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edtApellidoPat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:padding="5dp"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/txvLabApellidoMat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Apellido Materno:"
+                    android:textColor="#FF0000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edtApellidoMat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:padding="5dp"
+                    android:textSize="20sp" />
+
             </LinearLayout>
 
             <LinearLayout
