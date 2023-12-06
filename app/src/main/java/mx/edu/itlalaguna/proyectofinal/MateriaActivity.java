@@ -33,4 +33,10 @@ public class MateriaActivity extends AppCompatActivity {
         Intent intent = new Intent(this, TareasActivity.class);
         startActivity ( intent );
     }
+
+    public void alumnos ( View v ) {
+
+        Intent intent = new Intent(this, AlumnosActivity.class);
+        startActivity ( intent );
+    }
 }
