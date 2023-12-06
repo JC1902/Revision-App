@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/txvTitulo"
+        android:id="@+id/txvTituloMateria"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -24,7 +24,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <ImageView
                 android:id="@+id/imgAddMateria"
@@ -36,7 +37,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -44,8 +46,8 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/txvLabNombre"
-                    android:layout_width="316dp"
+                    android:id="@+id/txvLabNombreMateria"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:padding="5dp"
@@ -55,7 +57,7 @@
                     android:textStyle="bold" />
 
                 <EditText
-                    android:id="@+id/txvNombreMateria"
+                    android:id="@+id/edtNombreMateria"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -82,7 +84,7 @@
                     android:textStyle="bold" />
 
                 <EditText
-                    android:id="@+id/txvGrupoMateria"
+                    android:id="@+id/edtGrupoMateria"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -109,7 +111,7 @@
                     android:textStyle="bold" />
 
                 <EditText
-                    android:id="@+id/txvHoraMateria"
+                    android:id="@+id/edtHoraMateria"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

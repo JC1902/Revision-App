@@ -73,14 +73,14 @@ public class MainActivity extends AppCompatActivity {
     public void agregarMateria ( View v ) {
         View alertaAgregarMateria = getLayoutInflater().inflate( R.layout.alerta_agregar_materia, null );
 
-        EditText txvNombre = alertaAgregarMateria.findViewById( R.id.txvNombreMateria );
-        EditText txvGrupo = alertaAgregarMateria.findViewById( R.id.txvGrupoMateria );
-        EditText txvHora = alertaAgregarMateria.findViewById( R.id.txvHoraMateria );
+        EditText edtNombre = alertaAgregarMateria.findViewById( R.id.edtNombreMateria);
+        EditText edtGrupo = alertaAgregarMateria.findViewById( R.id.edtGrupoMateria);
+        EditText edtHora = alertaAgregarMateria.findViewById( R.id.edtHoraMateria);
 
         AlertDialog.Builder builder = new AlertDialog.Builder( this );
 
-        builder.setView(alertaAgregarMateria)
-                .setIcon( R.drawable.itl )
+        builder.setIcon( R.drawable.itl )
+                .setView(alertaAgregarMateria)
                 .setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
