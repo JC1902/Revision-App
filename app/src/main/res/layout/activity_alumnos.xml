@@ -7,7 +7,7 @@
     tools:context=".TareasActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/tb_tareas"
+        android:id="@+id/tb_alumnos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
@@ -18,13 +18,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_AgregarTarea"
+        android:id="@+id/fab_AgregarAlumno"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         android:clickable="true"
-        android:onClick="agregarTareas"
+        android:onClick="agregarAlumno"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add"
@@ -37,6 +37,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tb_tareas" />
+        app:layout_constraintTop_toBottomOf="@+id/tb_alumnos" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

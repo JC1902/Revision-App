@@ -22,7 +22,7 @@
         android:padding="5dp">
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/txvNoControl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
@@ -32,7 +32,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/txvNombreAlumno"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"

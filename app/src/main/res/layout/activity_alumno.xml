@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TareasActivity">
+    tools:context=".AlumnoActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/tb_tareas"
+        android:id="@+id/tb_alumno"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
@@ -18,25 +18,27 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_AgregarTarea"
+        android:id="@+id/fab_EliminarAlumno"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
+        android:background="#FFFFFF"
         android:clickable="true"
-        android:onClick="agregarTareas"
+        android:focusable="true"
+        android:importantForAccessibility="no"
+        app:backgroundTint="#3949AB"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add"
-        android:importantForAccessibility="no"
-        android:focusable="true" />
+        app:srcCompat="@android:drawable/ic_menu_delete" />
 
     <ListView
-        android:id="@+id/lvAlumnos"
+        android:id="@+id/lvAlumnoTareas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:choiceMode="multipleChoice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tb_tareas" />
+        app:layout_constraintTop_toBottomOf="@+id/tb_alumno" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

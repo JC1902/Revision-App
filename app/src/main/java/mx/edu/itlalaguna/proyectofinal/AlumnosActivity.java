@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -23,34 +22,34 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+public class AlumnosActivity extends AppCompatActivity {
 
-public class TareasActivity extends AppCompatActivity {
 
     List<String> listaString;
     ArrayAdapter<String> arrayAdapter;
-    private final String [] tareas   = { "VideoView" , "ListView" , "Grabar Audio" , "Video 2"};
+    private final String [] alumnos   = { "Alumno 20" ,  "Alumno 43" ,  "Alumno 52" , "Alumno 6" , "Alumno 1" ,};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tareas);
+        setContentView(R.layout.activity_alumnos);
 
-        setTitle( "Tareas");
-        Toolbar myToolbar = findViewById(R.id.tb_tareas);
+        setTitle( "Alumnos");
+        Toolbar myToolbar = findViewById(R.id.tb_alumnos);
         setSupportActionBar(myToolbar);
 
         ListView listaTareas = findViewById ( R.id.lvAlumnos);
 
 
-        listaString =new ArrayList<>(Arrays.asList( tareas ));
-        arrayAdapter = new ArrayAdapter<>(this, R.layout.lista_tareas , R.id.txvTarea, tareas);
+        listaString =new ArrayList<>(Arrays.asList( alumnos ));
+        arrayAdapter = new ArrayAdapter<>(this, R.layout.lista_alumnos , R.id.txvNombreAlumno, alumnos );
         listaTareas.setAdapter(arrayAdapter);
 
         listaTareas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // ---- Aqui iria el dirrecionamiento a la materia ----
-                Intent intent = new Intent(TareasActivity.this, TareaActivity.class);
-                intent.putExtra("Nombre", tareas[ position ] );
+                Intent intent = new Intent(AlumnosActivity.this, AlumnoActivity.class);
+                intent.putExtra("Nombre", alumnos[ position ] );
                 startActivity ( intent );
 
                 //Toast.makeText(MainActivity.this, "Ir a Materia : "+materias[ position ], Toast.LENGTH_SHORT).show();
@@ -75,7 +74,7 @@ public class TareasActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                TareasActivity.this.arrayAdapter.getFilter().filter(newText);
+                AlumnosActivity.this.arrayAdapter.getFilter().filter(newText);
                 return false;
             }
         });
@@ -83,17 +82,17 @@ public class TareasActivity extends AppCompatActivity {
         return true;
     }
 
-    public void agregarTareas ( View v ){
+    public void agregarAlumno ( View v ){
         AlertDialog.Builder builder = new AlertDialog.Builder( this );
 
         builder.setIcon( R.drawable.itl )
-                .setView( R.layout.alerta_agregar_tarea )
+                .setView( R.layout.alerta_agregar_alumno )
                 .setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // -------- Llamada al metodo "agregarMateria" ---------//
-                        Toast.makeText( TareasActivity.this,
-                                "Tarea Agregada",
+                        Toast.makeText( AlumnosActivity.this,
+                                "Materia Agregada",
                                 Toast.LENGTH_LONG ).show();
                     }
                 })
