@@ -26,9 +26,6 @@ import java.util.List;
 
 public class TareasActivity extends AppCompatActivity {
 
-
-
-
     List<String> listaString;
     ArrayAdapter<String> arrayAdapter;
     private final String [] tareas   = { "VideoView" , "ListView" , "Grabar Audio" , "Video 2"};
@@ -96,7 +93,7 @@ public class TareasActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // -------- Llamada al metodo "agregarMateria" ---------//
                         Toast.makeText( TareasActivity.this,
-                                "Materia Agregada",
+                                "Tarea Agregada",
                                 Toast.LENGTH_LONG ).show();
                     }
                 })
