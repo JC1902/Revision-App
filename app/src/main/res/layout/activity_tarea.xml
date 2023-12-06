@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TareasActivity">
+    tools:context=".TareaActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_tarea"
@@ -25,12 +25,13 @@
         android:layout_marginBottom="32dp"
         android:background="#FFFFFF"
         android:clickable="true"
+        android:focusable="true"
+        android:importantForAccessibility="no"
+        android:onClick="borrarTareas"
         app:backgroundTint="#D81B60"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_delete"
-        android:importantForAccessibility="no"
-        android:focusable="true" />
+        app:srcCompat="@android:drawable/ic_menu_delete" />
 
     <ListView
         android:id="@+id/lvTareasAlumnos"
