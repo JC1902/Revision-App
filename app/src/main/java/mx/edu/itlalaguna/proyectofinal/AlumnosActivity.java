@@ -27,7 +27,7 @@ public class AlumnosActivity extends AppCompatActivity {
 
     List<String> listaString;
     ArrayAdapter<String> arrayAdapter;
-    private final String [] alumnos   = { "Alumno 20" ,  "Alumno 43" ,  "Alumno 52" , "Alumno 6" , "Alumno 1" ,};
+    private final String [] alumnos   = { "Alumno 20" ,  "Alumno 43" ,  "Alumno 52" , "Alumno 6" , "Alumno 1" , "Jorge" , "Jorge 2"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
