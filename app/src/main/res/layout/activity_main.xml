@@ -24,14 +24,14 @@
         tools:layout_editor_absoluteX="4dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAcercaDe"
+        android:id="@+id/fabAgregarTarea"
         style="@style/MyFloatingActionButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
-        android:contentDescription="Crear Tarea"
         android:clickable="true"
+        android:contentDescription="Crear Materia"
         android:onClick="fabAgregarMaterias"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

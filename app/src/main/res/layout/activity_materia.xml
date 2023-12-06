@@ -72,13 +72,14 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
+        android:contentDescription="Borrar"
+        android:focusable="true"
+        android:onClick="fabBorrarMateria"
         app:backgroundTint="@color/design_default_color_error"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_delete"
-        app:tint="#FFFFFF"
-        android:focusable="true"
-        android:contentDescription="Borrar" />
+        app:tint="#FFFFFF" />
 
 
 

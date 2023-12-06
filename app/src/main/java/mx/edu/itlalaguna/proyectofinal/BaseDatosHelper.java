@@ -3,6 +3,7 @@ package mx.edu.itlalaguna.proyectofinal;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -11,43 +12,52 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "BaseDatosHelper";
 
-    private static final String DB_NAME    = "materiasDB";
-    private static final int    DB_VERSION = 1;
-    private static final String tabla []= {
+    private static final String DB_NAME = "materiasDB";
+    private static final int DB_VERSION = 1;
+    private static final String tabla[] = {
             "clase",
             "alumno",
             "claseAlumno",
             "tareas",
-            "tareasAlumno"};
-    private static final String COL1 = "ID";
-    private static final String COL2 = "nombre";
-    private static final String creacion[]={
-            "CREATE TABLE clase (idClase TEXT PRIMARY KEY, nombreClase TEXT, grupo TEXT, horaClase INTEGER)",
+            "tareasAlumno" };
+
+    private static final String columnasClase[] = {
+            "idMateria",
+            "nombreClase",
+            "grupo",
+            "horaClase"
+    };
+    private static final String creacion[] = {
+            "CREATE TABLE materias (" + columnasClase[ 0 ] + " TEXT PRIMARY KEY, " + columnasClase[ 1 ] + " TEXT, " + columnasClase[ 2 ] + " TEXT, " + columnasClase[ 3 ] + " INTEGER)",
             "CREATE TABLE alumno (numControl TEXT PRIMARY KEY, nombreAlumno TEXT, apellidosAlumno TEXT)",
-            "CREATE TABLE claseAlumno (idClase TEXT, numControl INTEGER, " +
-                    "PRIMARY KEY (idClase,numControl), " +
-                    "FOREIGN KEY (idClase) REFERENCES clase(idClase), " +
+            "CREATE TABLE claseAlumno (idMateria TEXT, numControl INTEGER, " +
+                    "PRIMARY KEY (idMateria,numControl), " +
+                    "FOREIGN KEY (idMateria) REFERENCES clase(idMateria), " +
                     "FOREIGN KEY (numControl) REFERENCES alumno(numControl))",
-            "CREATE TABLE tareas (idTarea INTEGER PRIMARY KEY AUTOINCREMENT, nombreTarea TEXT, descripcion TEXT, idClase TEXT )",
-            "CREATE TABLE tareasAlumno (idTarea INTEGER , numControl INTEGER, hecha INTEGER " +
-                    "PRIMARY KEY (idTarea,numControl), " +
-                    "FOREIGN KEY (idTarea) REFERENCES tareas(idTarea), " +
-                    "FOREIGN KEY (numControl) REFERENCES alumno(numControl))"
+            "CREATE TABLE tareas (idTarea INTEGER PRIMARY KEY AUTOINCREMENT, nombreTarea TEXT, descripcion TEXT, idMateria TEXT )",
+            "CREATE TABLE tareasAlumno (" +
+                    " idTarea INTEGER ," +
+                    " numControl INTEGER," +
+                    " hecha INTEGER, " +
+                    " PRIMARY KEY (idTarea,numControl)," +
+                    " FOREIGN KEY (idTarea) REFERENCES tareas(idTarea)," +
+                    " FOREIGN KEY (numControl) REFERENCES alumno(numControl)" +
+                    ")"
     };
 
     //----------------------------------------------------------------------------------------------
 
-    public BaseDatosHelper(Context context) {
+    public BaseDatosHelper ( Context context ) {
 
-        super(context, DB_NAME, null, DB_VERSION );
+        super ( context, DB_NAME, null, DB_VERSION );
     }
 
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
-        int col=0;
-        for(String tabla:creacion){
+    public void onCreate ( SQLiteDatabase db ) {
+        int col = 0;
+        for ( String tabla : creacion ) {
             String crearTabla = tabla;
             col++;
             db.execSQL ( crearTabla );
@@ -59,40 +69,41 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade ( SQLiteDatabase db, int i, int i1 ) {
-        for(String tabla:tabla) {
-            db.execSQL("DROP IF TABLE EXISTS " + tabla);
-            onCreate(db);
+        for ( String tabla : tabla ) {
+            db.execSQL ( "DROP IF TABLE EXISTS " + tabla );
+            onCreate ( db );
         }
     }
+
     // Inserts
     //----------------------------------------------------------------------------------------------
-    public boolean addDatosAlumno(String numControl, String nombreAlumno, String apellidosAlumno) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("numControl", numControl);
-        contentValues.put("nombreAlumno", nombreAlumno);
-        contentValues.put("apellidosAlumno", apellidosAlumno);
+    public boolean addDatosAlumno ( String numControl, String nombreAlumno, String apellidosAlumno ) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        ContentValues contentValues = new ContentValues ( );
+        contentValues.put ( "numControl", numControl );
+        contentValues.put ( "nombreAlumno", nombreAlumno );
+        contentValues.put ( "apellidosAlumno", apellidosAlumno );
 
-        Log.d(TAG, "addDatosAlumno: Agregando alumno a la tabla alumno");
+        Log.d ( TAG, "addDatosAlumno: Agregando alumno a la tabla alumno" );
 
-        long resultado = db.insert("alumno", null, contentValues);
+        long resultado = db.insert ( "alumno", null, contentValues );
 
         // si se insertó correctamente resultado valdrá -1
         return resultado != -1;
     }
 
     //----------------------------------------------------------------------------------------------
-    public boolean addDatosClase(String idClase, String nombreClase, String grupo, int horaClase) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("idClase", idClase);
-        contentValues.put("nombreClase", nombreClase);
-        contentValues.put("grupo", grupo);
-        contentValues.put("horaClase", horaClase);
+    public boolean addDatosClase ( String idMateria, String nombreClase, String grupo, int horaClase ) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        ContentValues contentValues = new ContentValues ( );
+        contentValues.put ( "idMateria", idMateria );
+        contentValues.put ( "nombreClase", nombreClase );
+        contentValues.put ( "grupo", grupo );
+        contentValues.put ( "horaClase", horaClase );
 
-        Log.d(TAG, "addDatosClase: Agregando " + nombreClase + " a la tabla clase");
+        Log.d ( TAG, "addDatosClase: Agregando " + nombreClase + " a la tabla clase" );
 
-        long resultado = db.insert("clase", null, contentValues);
+        long resultado = db.insert ( "materias", null, contentValues );
 
         if ( resultado == -1 ) {
             return false;
@@ -100,122 +111,178 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+
     //----------------------------------------------------------------------------------------------
-    public boolean addDatosClaseAlumno(String idClase, int numControl) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("idClase", idClase);
-        contentValues.put("numControl", numControl);
+    public boolean addDatosClaseAlumno ( String idMateria, int numControl ) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        ContentValues contentValues = new ContentValues ( );
+        contentValues.put ( "idMateria", idMateria );
+        contentValues.put ( "numControl", numControl );
 
-        Log.d(TAG, "addDatosClaseAlumno: Agregando relación clase-alumno a la tabla claseAlumno");
+        Log.d ( TAG, "addDatosClaseAlumno: Agregando relación clase-alumno a la tabla claseAlumno" );
 
-        long resultado = db.insert("claseAlumno", null, contentValues);
+        long resultado = db.insert ( "claseAlumno", null, contentValues );
 
         // Si se insertó correctamente, resultado valdrá -1
         return resultado != -1;
     }
 
     //----------------------------------------------------------------------------------------------
-    public boolean addDatosTarea(String nombreTarea, String descripcion, String idClase) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("nombreTarea", nombreTarea);
-        contentValues.put("descripcion", descripcion);
-        contentValues.put("idClase", idClase);
+    public boolean addDatosTarea ( String nombreTarea, String descripcion, String idMateria ) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        ContentValues contentValues = new ContentValues ( );
+        contentValues.put ( "nombreTarea", nombreTarea );
+        contentValues.put ( "descripcion", descripcion );
+        contentValues.put ( "idMateria", idMateria );
 
-        Log.d(TAG, "addDatosTarea: Agregando tarea a la tabla tareas");
+        Log.d ( TAG, "addDatosTarea: Agregando tarea a la tabla tareas" );
 
-        long resultado = db.insert("tareas", null, contentValues);
-
-        // si se insertó correctamente resultado valdrá -1
-        return resultado != -1;
-    }
-    //----------------------------------------------------------------------------------------------
-    public boolean addDatosTareasAlumno(int idTarea, String numControl, int hecha) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("idTarea", idTarea);
-        contentValues.put("numControl", numControl);
-        contentValues.put("hecha", hecha);
-
-        Log.d(TAG, "addDatosTareasAlumno: Agregando tarea a la tabla tareasAlumno");
-
-        long resultado = db.insert("tareasAlumno", null, contentValues);
+        long resultado = db.insert ( "tareas", null, contentValues );
 
         // si se insertó correctamente resultado valdrá -1
         return resultado != -1;
     }
-    //----------------------------------------------------------------------------------------------
 
-    public Cursor getDatos () {
-        // getReadableDatabase () y getWritableDatabase () devuelven el mismo objeto
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + tabla;
-        Cursor data = db.rawQuery ( query, null );
-        return data;
+    //----------------------------------------------------------------------------------------------
+    public boolean addDatosTareasAlumno ( int idTarea, String numControl, int hecha ) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        ContentValues contentValues = new ContentValues ( );
+        contentValues.put ( "idTarea", idTarea );
+        contentValues.put ( "numControl", numControl );
+        contentValues.put ( "hecha", hecha );
+
+        Log.d ( TAG, "addDatosTareasAlumno: Agregando tarea a la tabla tareasAlumno" );
+
+        long resultado = db.insert ( "tareasAlumno", null, contentValues );
+
+        // si se insertó correctamente resultado valdrá -1
+        return resultado != -1;
     }
 
     //----------------------------------------------------------------------------------------------
-    public Cursor getAlumnos (String buscado ) {
-        SQLiteDatabase db = this.getReadableDatabase ();
+    public Cursor getAlumnos ( String buscado ) {
+        SQLiteDatabase db = this.getReadableDatabase ( );
         String query = "SELECT * FROM alumnos WHERE numControl = '" + buscado + "'";
         Cursor data = db.rawQuery ( query, null );
         return data;
     }
+
     //----------------------------------------------------------------------------------------------
-    public Cursor getClase (String Tabla,String columna, String buscado ) {
-        SQLiteDatabase db = this.getReadableDatabase ();
-        String query = "SELECT * FROM clase ";
+    public Cursor getMateria ( ) {
+        SQLiteDatabase db = this.getReadableDatabase ( );
+        String query = "SELECT * FROM materias ";
         Cursor data = db.rawQuery ( query, null );
         return data;
     }
 
-    public Cursor getTareas (String buscado ) {
-        SQLiteDatabase db = this.getReadableDatabase ();
-        String query = "SELECT idtarea,nombreTarea,descripcion FROM tareas where idClase = '"+buscado+ "'";
+    //----------------------------------------------------------------------------------------------
+    public Cursor getTareas ( String buscado ) {
+        SQLiteDatabase db = this.getReadableDatabase ( );
+        String query = "SELECT idtarea,nombreTarea,descripcion FROM tareas where idMateria = '" + buscado + "'";
         Cursor data = db.rawQuery ( query, null );
         return data;
     }
 
-    public Cursor getTareaAlumnos(String idTarea) {
-        SQLiteDatabase db = this.getReadableDatabase();
+    //----------------------------------------------------------------------------------------------
+    public Cursor getTareaAlumnos ( String idTarea ) {
+        SQLiteDatabase db = this.getReadableDatabase ( );
         String query = "SELECT alumno.*, tareasAlumno.hecha " +
                 "FROM alumno " +
                 "JOIN tareasAlumno ON alumno.numControl = tareasAlumno.numControl " +
                 "WHERE tareasAlumno.idTarea = '" + idTarea + "'";
-        Cursor data = db.rawQuery(query, null);
-        return data;
-    }
-
-    public Cursor getTareasa (String buscado ) {
-        SQLiteDatabase db = this.getReadableDatabase ();
-        String query = "SELECT idtarea,nombreTarea,descripcion FROM tareas where idTarea = '"+buscado+ "'";
         Cursor data = db.rawQuery ( query, null );
         return data;
     }
-    //----------------------------------------------------------------------------------------------
 
-    public void updateNombre ( String newNombre, int id, String oldNombre ) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + tabla + " SET " + COL2 +
-                " = '" + newNombre + "' WHERE " + COL1 + " = '" + id + "'" +
-                " AND " + COL2 + " = '" + oldNombre + "'";
+    //----------------------------------------------------------------------------------------------
+    public Cursor getTareasAsignadasAlumnoEnMateria ( String numControl, String idMateria ) {
+        SQLiteDatabase db = this.getReadableDatabase ( );
+        String query = "SELECT tareas.*, tareasAlumno.hecha " +
+                "FROM tareas " +
+                "JOIN materias ON tareas.idMateria = clase.idMateria " +
+                "LEFT JOIN tareasAlumno ON tareas.idTarea = tareasAlumno.idTarea " +
+                "AND tareasAlumno.numControl = '" + numControl + "' " +
+                "WHERE clase.idMateria = '" + idMateria + "'";
+        Cursor data = db.rawQuery ( query, null );
+        return data;
+    }
+
+    //----------------------------------------------------------------------------------------------
+    public void updateAlumnoTarea ( int hecha, String idAlumno, String idTarea ) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        String query = "UPDATE tareasAlumno SET hecha = '" + hecha + "' WHERE numControl = '" + idAlumno + "'" +
+                " AND idTarea = '" + idTarea + "'";
         Log.d ( TAG, "updateName: query: " + query );
-        Log.d ( TAG, "updateName: Setting name to " + newNombre );
+        Log.d ( TAG, "updateName: Setting name to " + hecha );
         db.execSQL ( query );
     }
 
     //----------------------------------------------------------------------------------------------
-
-    public void deleteNombre ( int id, String nombre ){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "DELETE FROM " + tabla + " WHERE "
-                + COL1 + " = '" + id + "'" +
-                " AND " + COL2 + " = '" + nombre + "'";
-        Log.d ( TAG, "deleteNombre: query: " + query );
-        Log.d ( TAG, "deleteNombre: Eliminando " + nombre + " de la base de datos.");
-        db.execSQL(query);
+    public void updateDatosAlumno ( String numControl, String nuevoNombre, String nuevosApellidos ) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        String query = "UPDATE alumno SET nombreAlumno = '" + nuevoNombre + "', apellidosAlumno = '" + nuevosApellidos + "' " +
+                "WHERE numControl = '" + numControl + "'";
+        Log.d ( TAG, "updateDatosAlumno: query: " + query );
+        Log.d ( TAG, "updateDatosAlumno: Setting name to " + nuevoNombre + " " + nuevosApellidos );
+        db.execSQL ( query );
     }
 
+    //----------------------------------------------------------------------------------------------
+    public void updateDatosTareas ( int idTarea, String nuevoNombreTarea, String nuevaDescripcion, String nuevaidMateria ) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        String query = "UPDATE tareas SET nombreTarea = '" + nuevoNombreTarea + "', descripcion = '" + nuevaDescripcion + "', idMateria = '" + nuevaidMateria + "'" +
+                " WHERE idTarea = " + idTarea;
+        Log.d ( TAG, "updateDatosTareas: query: " + query );
+        Log.d ( TAG, "updateDatosTareas: Setting task details for " + nuevoNombreTarea );
+        db.execSQL ( query );
+    }
+
+    //----------------------------------------------------------------------------------------------
+    public void updateDatosClase ( String idMateria, String nuevoNombreClase, String nuevoGrupo, int nuevaHoraClase ) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        String query = "UPDATE materias SET nombreClase = '" + nuevoNombreClase + "', grupo = '" + nuevoGrupo + "', horaClase = " + nuevaHoraClase +
+                " WHERE idMateria = '" + idMateria + "'";
+        Log.d ( TAG, "updateDatosClase: query: " + query );
+        Log.d ( TAG, "updateDatosClase: Setting class details for " + nuevoNombreClase + " " + nuevoGrupo );
+        db.execSQL ( query );
+    }
+
+    //----------------------------------------------------------------------------------------------
+    public void deleteAlumno ( String numControl, String nombre ) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        String query = "DELETE FROM alumno WHERE numControl = '" + numControl + "'";
+        Log.d ( TAG, "deleteNombre: query: " + query );
+        Log.d ( TAG, "deleteNombre: Eliminando " + nombre + " de la tabla alumnos." );
+        db.execSQL ( query );
+    }
+
+    //----------------------------------------------------------------------------------------------
+    public boolean deleteClase(String idMateria, String nombre) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "DELETE FROM materias WHERE idMateria = '" + idMateria + "'";
+        Log.d(TAG, "deleteNombre: query: " + query);
+        Log.d(TAG, "deleteNombre: Eliminando " + nombre + " de la tabla clase.");
+
+        try {
+            // Intenta ejecutar la eliminación
+            db.execSQL(query);
+            // Si no hay excepciones, significa que la eliminación fue exitosa
+            return true;
+        } catch ( SQLException e) {
+            // Si hay una excepción, imprímela en el registro y devuelve false
+            Log.e(TAG, "Error al eliminar la materia: " + e.getMessage());
+            return false;
+        }
+    }
+
+
+    //----------------------------------------------------------------------------------------------
+    public void deleteTarea ( String idTarea, String nombre ) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        String query = "DELETE FROM tareas WHERE idTarea = '" + idTarea + "'";
+        Log.d ( TAG, "deleteNombre: query: " + query );
+        Log.d ( TAG, "deleteNombre: Eliminando " + nombre + " de la tabla tareas." );
+        db.execSQL ( query );
+    }
     //----------------------------------------------------------------------------------------------
 }
