@@ -24,12 +24,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="116dp"
         android:background="@null"
+        android:contentDescription="Tareas"
+        android:onClick="tareas"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.862"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txvInfoMateria"
-        app:srcCompat="@drawable/tareasbtn"
-        android:contentDescription="Tareas" />
+        app:srcCompat="@drawable/tareasbtn" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_materia"

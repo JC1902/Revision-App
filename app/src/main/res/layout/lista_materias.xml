@@ -5,7 +5,7 @@
     android:padding="10dp">
 
     <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/gifMateria"
+        android:id="@+id/imgTarea"
         android:layout_width="250px"
         android:layout_height="104dp"
         android:padding="5dp"
@@ -18,7 +18,7 @@
         android:padding="5dp">
 
         <TextView
-            android:id="@+id/txvNombre"
+            android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -39,7 +39,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/txvHora"
+            android:id="@+id/txvMateria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
