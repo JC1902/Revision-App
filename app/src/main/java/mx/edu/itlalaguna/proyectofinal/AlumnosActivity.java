@@ -92,9 +92,9 @@ public class AlumnosActivity extends AppCompatActivity {
                 .setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // -------- Llamada al metodo "agregarMateria" ---------//
+
                         Toast.makeText( AlumnosActivity.this,
-                                "Materia Agregada",
+                                "Alumno Agregado",
                                 Toast.LENGTH_LONG ).show();
                     }
                 })
