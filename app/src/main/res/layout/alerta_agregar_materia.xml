@@ -62,6 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
+                    android:hint="A17A"
                     android:inputType="text"
                     android:padding="5dp"
                     android:textSize="20sp" />
@@ -90,6 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
+                    android:hint="Materia"
                     android:inputType="text"
                     android:padding="5dp"
                     android:textSize="20sp" />
@@ -117,6 +119,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
+                    android:hint="Grupo A"
                     android:inputType="text"
                     android:padding="5dp"
                     android:textSize="20sp" />
@@ -144,6 +147,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
+                    android:hint="8"
                     android:inputType="text"
                     android:padding="5dp"
                     android:textSize="20sp" />

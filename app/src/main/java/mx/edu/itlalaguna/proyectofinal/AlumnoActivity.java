@@ -1,10 +1,12 @@
 package mx.edu.itlalaguna.proyectofinal;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,6 +23,7 @@ import java.util.List;
 
 public class AlumnoActivity extends AppCompatActivity {
 
+    String nombre;
     MenuItem filtro;
     Boolean pendientes = true;
     List<String> listaString;
@@ -36,7 +39,7 @@ public class AlumnoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alumno);
 
         Intent intent = getIntent();
-        String nombre = intent.getStringExtra("Nombre");
+        nombre = intent.getStringExtra("Nombre");
 
         setTitle( nombre );
         Toolbar myToolbar = findViewById(R.id.tb_alumno);
@@ -127,13 +130,33 @@ public class AlumnoActivity extends AppCompatActivity {
         listaTareas.setAdapter(arrayAdapter);
     }
 
-    public void borrarAlumno (View v ){
-        long [] test = listaTareas.getCheckItemIds();
-        String elementos = "";
-        for (long i: test ) {
-            elementos += " , "+i;
-        }
-        Toast.makeText(this, elementos, Toast.LENGTH_SHORT).show();
+    public void alertaBorrarAlumno (View v ){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder( this );
+
+        builder.setIcon(R.drawable.itl )
+                .setView( R.layout.alerta_eliminar )
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        borrarAlumno( v );
+                    }
+                })
+                .create()
+                .show();
+
+
+    }
+
+    public void borrarAlumno (View v ) {
+
+        Toast.makeText(this, "Alumno Eliminado", Toast.LENGTH_SHORT).show();
     }
 
 }
