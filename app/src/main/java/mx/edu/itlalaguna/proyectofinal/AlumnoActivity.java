@@ -36,15 +36,29 @@ public class AlumnoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alumno);
 
         Intent intent = getIntent();
-        setTitle( intent.getStringExtra("Nombre" ) );
+        String nombre = intent.getStringExtra("Nombre");
+
+        setTitle( nombre );
         Toolbar myToolbar = findViewById(R.id.tb_alumno);
         setSupportActionBar(myToolbar);
+
+        myToolbar.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+               toast( nombre );
+                return false;
+            }
+        });
 
         listaTareas = findViewById ( R.id.lvAlumnoTareas );
 
         listaString =new ArrayList<>(Arrays.asList( tareas  ));
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice , android.R.id.text1, tareas);
         listaTareas.setAdapter(arrayAdapter);
+    }
+
+    public void toast (String x){
+        Toast.makeText(this, x, Toast.LENGTH_SHORT).show();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
