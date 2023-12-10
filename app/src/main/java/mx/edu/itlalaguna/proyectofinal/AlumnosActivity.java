@@ -33,6 +33,7 @@ public class AlumnosActivity extends AppCompatActivity {
 
 
     ArrayAdapter < String > arrayAdapter;
+    private static final int REQUEST_CODE_BORRAR_ALUMNO_MATERIA = 1;
     private boolean isOpen = false;
     private Animation girarAdelante;
     private Animation girarAtras;
@@ -43,6 +44,7 @@ public class AlumnosActivity extends AppCompatActivity {
     FloatingActionButton fabPrincipal;
     FloatingActionButton fabAgregarAlumnoE;
     FloatingActionButton fabAgregarAlumnoN;
+    ListView lvAlumnos;
     private final List < String > alumnos = new ArrayList < String > ( );
 
     @Override
@@ -63,15 +65,16 @@ public class AlumnosActivity extends AppCompatActivity {
         setSupportActionBar ( myToolbar );
 
 
-        Cursor cursorAlumnos = dbHelper.getAlumnos (clase );
+        Cursor cursorAlumnos = dbHelper.getAlumnosMateria ( clase );
         // Llenado del ListView
-        ListView lvAlumnos = findViewById ( R.id.lvAlumnos );
+        lvAlumnos = findViewById ( R.id.lvAlumnos );
         if ( cursorAlumnos != null && cursorAlumnos.moveToFirst ( ) ) {
             do {
                 // Obtener el nombre del alumno desde el cursor y agregarlo a la lista
-                String numControl=cursorAlumnos.getString ( 0 );
+                String numControl = cursorAlumnos.getString ( 0 );
                 String nombre = cursorAlumnos.getString ( 1 );
-                alumnos.add ( numControl+" "+nombre );
+                String apellidos = cursorAlumnos.getString ( 2 );
+                alumnos.add ( numControl + " " + nombre + " " + apellidos );
             } while ( cursorAlumnos.moveToNext ( ) );
 
             // Inicializar el adaptador con los nombres de lss alumnos
@@ -88,8 +91,9 @@ public class AlumnosActivity extends AppCompatActivity {
             public void onItemClick ( AdapterView < ? > parent, View view, int position, long id ) {
                 // ---- Aqui iria el dirrecionamiento a la materia ----
                 Intent intent = new Intent ( AlumnosActivity.this, AlumnoActivity.class );
+                intent.putExtra ( "idMateria", clase );
                 intent.putExtra ( "Nombre", alumnos.get ( position ) );
-                intent.putExtra ( "NumControl", alumnos.get ( position ) );
+                intent.putExtra ( "NumControl", obtenerNumControl (0).get ( position ) );
                 startActivity ( intent );
 
                 //Toast.makeText(MainActivity.this, "Ir a Materia : "+materias[ position ], Toast.LENGTH_SHORT).show();
@@ -97,6 +101,20 @@ public class AlumnosActivity extends AppCompatActivity {
             }
         } );
 
+    }
+
+    protected void onResume() {
+        super.onResume();
+        // Actualizar la lista de alumnos cada vez que la actividad vuelve a estar en primer plano
+        actualizarListaAlumnos();
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_BORRAR_ALUMNO_MATERIA && resultCode == RESULT_OK) {
+            // Aquí puedes actualizar la lista de alumnos
+            actualizarListaAlumnos();
+        }
     }
 
     public boolean onCreateOptionsMenu ( Menu menu ) {
@@ -126,13 +144,13 @@ public class AlumnosActivity extends AppCompatActivity {
         animarBoton ( );
     }
 
-    private List < String > obtenerNombresAlumnos ( ) {
+    private List < String > obtenerTodoAlumnos ( ) {
         List < String > nombresAlumnos = new ArrayList <> ( );
         String id = getIntent ( ).getStringExtra ( "Id" );
-        Cursor cursor = dbHelper.getAlumnos ( id );  // Reemplaza con tu método para obtener alumnos
+        Cursor cursor = dbHelper.getAlumnosMateria ( id );  // Reemplaza con tu método para obtener alumnos
         if ( cursor != null && cursor.moveToFirst ( ) ) {
             do {
-                String nombreAlumno = cursor.getString ( 1 ) + cursor.getString ( 2 );
+                String nombreAlumno = cursor.getString ( 0 ) + " " + cursor.getString ( 1 ) + " " + cursor.getString ( 2 );
                 nombresAlumnos.add ( nombreAlumno );
             } while ( cursor.moveToNext ( ) );
 
@@ -142,10 +160,36 @@ public class AlumnosActivity extends AppCompatActivity {
         return nombresAlumnos;
     }
 
-    private List < String > obtenerNumControl ( ) {
+    private List < String > obtenerNombresAlumnos ( int op) {
+        Cursor cursor;
+        if(op==0){
+            String id = getIntent ( ).getStringExtra ( "Id" );
+            cursor = dbHelper.getAlumnosMateria ( id );  // Reemplaza con tu método para obtener alumnos
+        }else{
+            cursor = dbHelper.getAlumnos ();
+        }
+        List < String > nombresAlumnos = new ArrayList <> ( );
+        if ( cursor != null && cursor.moveToFirst ( ) ) {
+            do {
+                String nombreAlumno = cursor.getString ( 1 ) + " " + cursor.getString ( 2 );
+                nombresAlumnos.add ( nombreAlumno );
+            } while ( cursor.moveToNext ( ) );
+
+            cursor.close ( );
+        }
+
+        return nombresAlumnos;
+    }
+
+    private List < String > obtenerNumControl ( int op) {
         List < String > numControl = new ArrayList <> ( );
-        String id = getIntent ( ).getStringExtra ( "Id" );
-        Cursor cursor = dbHelper.getAlumnos ( id );  // Reemplaza con tu método para obtener alumnos
+        Cursor cursor;
+        if(op==0){
+            String id = getIntent ( ).getStringExtra ( "Id" );
+            cursor = dbHelper.getAlumnosMateria ( id );  // Reemplaza con tu método para obtener alumnos
+        }else{
+            cursor = dbHelper.getAlumnos ();
+        }
         if ( cursor != null && cursor.moveToFirst ( ) ) {
             do {
                 String nomCont = cursor.getString ( 0 );
@@ -166,8 +210,8 @@ public class AlumnosActivity extends AppCompatActivity {
         // Obtiene el Spinner del diseño de la alerta
         Spinner spinnerAlumnos = alertaAgregarAlumnoExistente.findViewById ( R.id.spinNumControl );
         // Obtiene los nombres de los alumnos desde la base de datos
-        List < String > nombresAlumnos = obtenerNombresAlumnos ( );
-        List < String > numControl = obtenerNumControl ( );
+        List < String > nombresAlumnos = obtenerNombresAlumnos ( 1);
+        List < String > numControl = obtenerNumControl ( 1);
         // Crea un ArrayAdapter para el Spinner
         ArrayAdapter < String > adapter = new ArrayAdapter <> ( this, android.R.layout.simple_spinner_item, nombresAlumnos );
         adapter.setDropDownViewResource ( android.R.layout.simple_spinner_dropdown_item );
@@ -179,8 +223,17 @@ public class AlumnosActivity extends AppCompatActivity {
                     @Override
                     public void onClick ( DialogInterface dialog, int which ) {
                         // Acciones al hacer clic en Guardar
-                        Toast.makeText ( AlumnosActivity.this, spinnerAlumnos.getSelectedItem ( ) + "", Toast.LENGTH_LONG ).show ( );
-                    }
+
+                        boolean alumnoClase = dbHelper.addDatosClaseAlumno ( clase, numControl.get ( spinnerAlumnos.getSelectedItemPosition () ) );
+                        if ( alumnoClase ) {
+                            alumnos.clear ( );
+                            alumnos.addAll ( obtenerTodoAlumnos ( ) );
+                            arrayAdapter.notifyDataSetChanged ( );
+                        } else {
+                            Toast.makeText ( AlumnosActivity.this,
+                                    "Error al agregar el alumno a la clase",
+                                    Toast.LENGTH_LONG ).show ( );
+                        }                    }
                 } )
                 .setNegativeButton ( "Cancelar", new DialogInterface.OnClickListener ( ) {
                     @Override
@@ -221,10 +274,11 @@ public class AlumnosActivity extends AppCompatActivity {
                                                 Toast.LENGTH_LONG ).show ( );
 
                                         boolean alumnoClase = dbHelper.addDatosClaseAlumno ( clase, numControl );
-                                        if(alumnoClase){
-                                            alumnos.add ( nombreAlumno+" "+apellidosAlumno );
-                                            arrayAdapter.notifyDataSetChanged ();
-                                        }else{
+                                        if ( alumnoClase ) {
+                                            alumnos.clear ( );
+                                            alumnos.addAll ( obtenerTodoAlumnos ( ) );
+                                            arrayAdapter.notifyDataSetChanged ( );
+                                        } else {
                                             Toast.makeText ( AlumnosActivity.this,
                                                     "Error al agregar el alumno a la clase",
                                                     Toast.LENGTH_LONG ).show ( );
@@ -248,6 +302,31 @@ public class AlumnosActivity extends AppCompatActivity {
                         dialog.dismiss ( );
                     }
                 } ).create ( ).show ( );
+    }
+
+    private void actualizarListaAlumnos ( ) {
+        dbHelper = new BaseDatosHelper ( this );
+        Cursor cursorAlumnos = dbHelper.getAlumnosMateria ( clase );
+        alumnos.clear ( );
+
+        if ( cursorAlumnos != null && cursorAlumnos.moveToFirst ( ) ) {
+            do {
+                // Obtener el nombre del alumno desde el cursor y agregarlo a la lista
+                String numControl = cursorAlumnos.getString ( 0 );
+                String nombre = cursorAlumnos.getString ( 1 );
+                String apellidos = cursorAlumnos.getString ( 2 );
+                alumnos.add ( numControl + " " + nombre + " " + apellidos );
+            } while ( cursorAlumnos.moveToNext ( ) );
+
+            if ( arrayAdapter != null ) {
+                arrayAdapter.notifyDataSetChanged ( );
+            } else {
+                arrayAdapter = new ArrayAdapter <> ( this, R.layout.lista_alumnos, R.id.txvNombreAlumno, alumnos );
+                lvAlumnos.setAdapter ( arrayAdapter );
+            }
+        } else {
+            arrayAdapter.clear ( );
+        }
     }
 
     private void animarBoton ( ) {

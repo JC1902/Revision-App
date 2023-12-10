@@ -8,6 +8,7 @@ import androidx.core.view.MenuItemCompat;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,36 +28,64 @@ public class AlumnoActivity extends AppCompatActivity {
     MenuItem filtro;
     Boolean pendientes = true;
     List<String> listaString;
+    BaseDatosHelper dbHelper;
     ArrayAdapter<String> arrayAdapter;
-    private final String [] tareasPendientes   = { "VideoView" , "ListView" , "Grabar Audio" , "Video 2"};
-    private final String [] tareasListas   = { "Foto" , "GridView" , "ImageView" , "AHHHHHHHHH"};
-
-    private String [] tareas   = tareasPendientes;
+    private ArrayList<String>tareasV;
+    private ArrayList<String>tareasP;
+    private ArrayList<String>tareasL;
     ListView listaTareas;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alumno);
 
+        dbHelper = new BaseDatosHelper(this);
         Intent intent = getIntent();
         nombre = intent.getStringExtra("Nombre");
 
-        setTitle( nombre );
+        setTitle(nombre);
         Toolbar myToolbar = findViewById(R.id.tb_alumno);
         setSupportActionBar(myToolbar);
 
         myToolbar.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-               toast( nombre );
+                toast(nombre);
                 return false;
             }
         });
 
-        listaTareas = findViewById ( R.id.lvAlumnoTareas );
+        // Asegúrate de que listaTareas se inicialice correctamente
+        listaTareas = findViewById(R.id.lvAlumnoTareas);
+        tareasP = new ArrayList<>();
+        tareasL = new ArrayList<>();
+        String numControl = getIntent().getStringExtra("NumControl");
+        String idMateria = getIntent().getStringExtra("idMateria");
+        Cursor cursorPendientes = dbHelper.getTareasAsignadasAlumnoEnMateria(numControl, idMateria);
 
-        listaString =new ArrayList<>(Arrays.asList( tareas  ));
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice , android.R.id.text1, tareas);
+        // Recorrer el cursor y clasificar las tareas
+        if (cursorPendientes != null && cursorPendientes.moveToFirst()) {
+            do {
+                String nombreTarea = cursorPendientes.getString(0);
+                String descripcionTarea = cursorPendientes.getString(1);
+                int hecha = cursorPendientes.getInt(2);
+
+                String tarea = nombreTarea + " - " + descripcionTarea;
+
+                if (hecha == 0) {
+                    tareasP.add(tarea);
+                } else {
+                    tareasL.add(tarea);
+                }
+            } while (cursorPendientes.moveToNext());
+
+            cursorPendientes.close();
+        }
+
+        // Inicializar lista con tareas pendientes
+        tareasV = tareasP;
+        listaString = new ArrayList<>(tareasV);
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, tareasV);
         listaTareas.setAdapter(arrayAdapter);
     }
 
@@ -91,31 +120,20 @@ public class AlumnoActivity extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-
         if (id == R.id.filtro) {
             pendientes = !pendientes;
-            if( pendientes ){
+            if ( pendientes ) {
                 filtro.setIcon ( R.drawable.pendiente );
-
-                tareas = tareasPendientes;
-                actualizarLista();
-
+                tareasV = tareasP;
+                actualizarLista ( );
             } else {
                 filtro.setIcon ( R.drawable.revisados );
-                tareas = tareasListas;
-                actualizarLista();
-
-                for (int i = 0; i < arrayAdapter.getCount(); i++) {
-                    listaTareas.setItemChecked(i, true);
+                tareasV = tareasL;
+                actualizarLista ( );
+                for ( int i = 0 ; i < arrayAdapter.getCount ( ) ; i++ ) {
+                    listaTareas.setItemChecked ( i, true );
                 }
-
-
             }
-
-
-
-
         }else
             return super.onOptionsItemSelected(item);
 
@@ -126,7 +144,7 @@ public class AlumnoActivity extends AppCompatActivity {
 
     public void actualizarLista (  ) {
 
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice , android.R.id.text1, tareas);
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice , android.R.id.text1, tareasV);
         listaTareas.setAdapter(arrayAdapter);
     }
 
@@ -155,8 +173,22 @@ public class AlumnoActivity extends AppCompatActivity {
     }
 
     public void borrarAlumno (View v ) {
+        String numControl=getIntent ().getStringExtra ( "NumControl" );
+        String idMateria=getIntent ().getStringExtra ( "idMateria" );
+        boolean alumnoBorrado=dbHelper.deleteAlumnoClase (numControl,idMateria);
 
-        Toast.makeText(this, "Alumno Eliminado", Toast.LENGTH_SHORT).show();
+        if (alumnoBorrado) {
+            // Si la materia se borra correctamente, puedes cerrar la actividad actual
+
+            // Notifica al adaptador que los datos han cambiado
+            Intent resultIntent = new Intent();
+            setResult(RESULT_OK, resultIntent);
+            finish();
+            // También podrías mostrar un mensaje o realizar otras acciones después de borrar la materia
+        } else {
+            // Muestra un mensaje si hay un error al borrar la materia
+            Toast.makeText(this, "Error al borrar la materia", Toast.LENGTH_LONG).show();
+        }
     }
 
 }
