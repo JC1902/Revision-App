@@ -40,7 +40,9 @@ public class MateriaActivity extends AppCompatActivity {
 
     public void alumnos ( View v ) {
 
+        String id=getIntent ().getStringExtra ( "Id" );
         Intent intent = new Intent(this, AlumnosActivity.class);
+        intent.putExtra ( "Id", id );
         startActivity ( intent );
     }
     public void fabBorrarMateria ( View v ) {

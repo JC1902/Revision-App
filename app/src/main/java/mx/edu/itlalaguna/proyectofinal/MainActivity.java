@@ -12,6 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView lvMaterias;
     private static final int REQUEST_CODE_BORRAR_MATERIA = 1;
-
+    private boolean isOpen=false;
     // Arreglos por Default para pruebas
     List < String > idMaterias = new ArrayList <> ( );
     List < String > nombresMaterias = new ArrayList <> ( );
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate ( Bundle savedInstanceState ) {
         super.onCreate ( savedInstanceState );
         setContentView ( R.layout.activity_main );
+
 
         //asingnacion de titulo y toolbar al activity para mostrar el menu
         setTitle ( "Materias" );
@@ -98,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
         } );
 
     }
-
     @Override
     protected void onActivityResult ( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult ( requestCode, resultCode, data );

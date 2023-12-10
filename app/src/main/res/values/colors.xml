@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="letra">#FF000000</color>
+    <color name="start">#0099FF</color>
+    <color name="end">#8ECAFF</color>
+    <color name="start1">#83A3FF</color>
+    <color name="end2">#D7EFFF</color>
+    <color name="stroke">#000000</color>
+    <color name="colorAccent">#850000</color>
 </resources>

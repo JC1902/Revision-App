@@ -27,12 +27,18 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
             "grupo",
             "horaClase"
     };
+    private static final String columnasAlumno[] = {
+            "numControl",
+            "nombreAlumno",
+            "apellidosAlumno"
+    };
     private static final String creacion[] = {
-            "CREATE TABLE materias (" + columnasClase[ 0 ] + " TEXT PRIMARY KEY, " + columnasClase[ 1 ] + " TEXT, " + columnasClase[ 2 ] + " TEXT, " + columnasClase[ 3 ] + " INTEGER)",
-            "CREATE TABLE alumno (numControl TEXT PRIMARY KEY, nombreAlumno TEXT, apellidosAlumno TEXT)",
+            "CREATE TABLE materias (" + columnasClase[ 0 ] + " TEXT PRIMARY KEY, " + columnasClase[ 1 ] + " TEXT, " + columnasClase[ 2 ] + " TEXT, "
+                    + columnasClase[ 3 ] + " INTEGER)",
+            "CREATE TABLE alumno ("+columnasAlumno[0]+" TEXT PRIMARY KEY, "+columnasAlumno[1]+" TEXT, "+columnasAlumno[2]+" TEXT)",
             "CREATE TABLE claseAlumno (idMateria TEXT, numControl INTEGER, " +
                     "PRIMARY KEY (idMateria,numControl), " +
-                    "FOREIGN KEY (idMateria) REFERENCES clase(idMateria), " +
+                    "FOREIGN KEY (idMateria) REFERENCES materias(idMateria), " +
                     "FOREIGN KEY (numControl) REFERENCES alumno(numControl))",
             "CREATE TABLE tareas (idTarea INTEGER PRIMARY KEY AUTOINCREMENT, nombreTarea TEXT, descripcion TEXT, idMateria TEXT )",
             "CREATE TABLE tareasAlumno (" +
@@ -113,7 +119,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
     //----------------------------------------------------------------------------------------------
-    public boolean addDatosClaseAlumno ( String idMateria, int numControl ) {
+    public boolean addDatosClaseAlumno ( String idMateria, String numControl ) {
         SQLiteDatabase db = this.getWritableDatabase ( );
         ContentValues contentValues = new ContentValues ( );
         contentValues.put ( "idMateria", idMateria );
@@ -160,13 +166,22 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
     //----------------------------------------------------------------------------------------------
-    public Cursor getAlumnos ( String buscado ) {
+    public Cursor getAlumno ( String buscado ) {
         SQLiteDatabase db = this.getReadableDatabase ( );
         String query = "SELECT * FROM alumnos WHERE numControl = '" + buscado + "'";
         Cursor data = db.rawQuery ( query, null );
         return data;
     }
-
+    public Cursor getAlumnos(String idMateria) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT alumno.* " +
+                "FROM alumno " +
+                "JOIN claseAlumno ON alumno.numControl = claseAlumno.numControl " +
+                "WHERE claseAlumno.idMateria = ?";
+        String[] selectionArgs = {idMateria};
+        Cursor data = db.rawQuery(query, selectionArgs);
+        return data;
+    }
     //----------------------------------------------------------------------------------------------
     public Cursor getMateria ( ) {
         SQLiteDatabase db = this.getReadableDatabase ( );
