@@ -143,7 +143,6 @@ public class AlumnoActivity extends AppCompatActivity {
     }
 
     public void actualizarLista (  ) {
-
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice , android.R.id.text1, tareasV);
         listaTareas.setAdapter(arrayAdapter);
     }
