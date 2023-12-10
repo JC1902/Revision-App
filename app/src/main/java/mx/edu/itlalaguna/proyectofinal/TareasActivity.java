@@ -47,7 +47,7 @@ public class TareasActivity extends AppCompatActivity {
 
 
         listaString = new ArrayList <> ( Arrays.asList ( tareas ) );
-        arrayAdapter = new ArrayAdapter <> ( this, R.layout.lista_tareas, R.id.txvTarea, tareas );
+        arrayAdapter = new ArrayAdapter <> ( this, R.layout.lista_tareas, R.id.txvNombreTarea ,tareas );
         listaTareas.setAdapter ( arrayAdapter );
 
         listaTareas.setOnItemClickListener ( new AdapterView.OnItemClickListener ( ) {

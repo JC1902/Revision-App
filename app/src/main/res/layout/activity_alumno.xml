@@ -27,7 +27,7 @@
         android:clickable="true"
         android:focusable="true"
         android:importantForAccessibility="no"
-        android:onClick="borrarAlumno"
+        android:onClick="alertaBorrarAlumno"
         app:backgroundTint="#D81B60"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
