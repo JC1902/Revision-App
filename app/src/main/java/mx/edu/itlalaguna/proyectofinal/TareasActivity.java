@@ -1,38 +1,53 @@
 package mx.edu.itlalaguna.proyectofinal;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import pl.droidsonroids.gif.GifImageView;
+
 
 public class TareasActivity extends AppCompatActivity {
 
-    List < String > listaString;
+    List < String > listaString = new ArrayList< String >();
     ArrayAdapter < String > arrayAdapter;
     String idClase;
-    private BaseDatosHelper dbHelper;
-    private final String[] tareas = { "VideoView", "ListView", "Grabar Audio", "Video 2" };
+    List < String > idTarea = new ArrayList< String >();
+    ListView lvTareas;
+    List < String > lTareas;
+    MiAdaptador adaptador;
 
+    private static final int REQUEST_CODE_BORRAR_TAREA = 1;
+    private BaseDatosHelper dbHelper;
+    private final String[] tareas = { };
+    //MiAdaptador arrayAdapter;
     @Override
     protected void onCreate ( Bundle savedInstanceState ) {
         super.onCreate ( savedInstanceState );
@@ -43,19 +58,46 @@ public class TareasActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById ( R.id.tb_tareas );
         setSupportActionBar ( myToolbar );
 
+        //listaString = new ArrayList <> ( Arrays.asList ( tareas ) );
+        //Se obtniene el intent del idMateria
+        idClase = getIntent().getStringExtra( "idMateria" );
+        //Se inicializa el objeto ListView
         ListView listaTareas = findViewById ( R.id.lvAlumnos );
 
+        dbHelper = new BaseDatosHelper ( this );
+        Cursor cursorTareas = dbHelper.getTareas ( idClase );
+        // Llenado del ListView
+        lvTareas = findViewById ( R.id.lvAlumnos );
+        if ( cursorTareas != null && cursorTareas.moveToFirst ( ) ) {
+            do {
+                // Obtener el nombre de la materia desde el cursor y agregarlo a la lista
+                String nombTarea = cursorTareas.getString ( 1 );
+                //Toast.makeText( this, nombTarea, Toast.LENGTH_LONG ).show();
+                idTarea.add ( cursorTareas.getString( 0 ) );
+                if ( nombTarea != null ) {
+                    listaString.add(nombTarea);
 
-        listaString = new ArrayList <> ( Arrays.asList ( tareas ) );
-        arrayAdapter = new ArrayAdapter <> ( this, R.layout.lista_tareas, R.id.txvNombreTarea ,tareas );
-        listaTareas.setAdapter ( arrayAdapter );
+                }else{
+                    Toast.makeText(this, "Esta nulo papito, es el : ", Toast.LENGTH_SHORT).show();
+                }
+            } while ( cursorTareas.moveToNext ( ) );
+
+            // Inicializar el adaptador con los nombres de las materias
+            adaptador = new MiAdaptador( this, listaString );
+            lvTareas.setAdapter ( adaptador );
+        } else {
+            // No hay datos en la tabla "materias", inicializar el adaptador con datos predeterminados
+            adaptador = new MiAdaptador( this, listaString );
+            lvTareas.setAdapter ( adaptador );
+        }
 
         listaTareas.setOnItemClickListener ( new AdapterView.OnItemClickListener ( ) {
             @Override
             public void onItemClick ( AdapterView < ? > parent, View view, int position, long id ) {
                 // ---- Aqui iria el dirrecionamiento a la materia ----
                 Intent intent = new Intent ( TareasActivity.this, TareaActivity.class );
-                intent.putExtra ( "Nombre", tareas[ position ] );
+                intent.putExtra ( "IdTarea", idTarea.get( position ) );
+                intent.putExtra ( "Nombre", listaString.get( position ) );
                 startActivity ( intent );
 
                 //Toast.makeText(MainActivity.this, "Ir a Materia : "+materias[ position ], Toast.LENGTH_SHORT).show();
@@ -80,7 +122,7 @@ public class TareasActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange ( String newText ) {
-                TareasActivity.this.arrayAdapter.getFilter ( ).filter ( newText );
+                TareasActivity.this.adaptador.getFilter ( ).filter ( newText );
                 return false;
             }
         } );
@@ -89,23 +131,24 @@ public class TareasActivity extends AppCompatActivity {
     }
 
     public void agregarTareas ( View v ) {
-        AlertDialog.Builder builder = new AlertDialog.Builder ( this );
         View dialogView = getLayoutInflater ( ).inflate ( R.layout.alerta_agregar_tarea, null );
+        AlertDialog.Builder builder = new AlertDialog.Builder ( this );
+
+        // Obtén la referencia a los elementos de la vista del diálogo
+        EditText edtNombreTarea = dialogView.findViewById ( R.id.edtNombreTarea );
+        EditText edtDescTarea = dialogView.findViewById ( R.id.edtDescTarea );
 
         builder.setIcon ( R.drawable.itl )
-                .setView ( R.layout.alerta_agregar_tarea )
+                .setView ( dialogView )
                 .setPositiveButton ( "Guardar", new DialogInterface.OnClickListener ( ) {
                     @Override
                     public void onClick ( DialogInterface dialog, int which ) {
-                        // Obtén la referencia a los elementos de la vista del diálogo
-                        EditText edtNombreTarea = dialogView.findViewById ( R.id.edtNombreTarea );
 
                         // Obtén el nombre de la tarea ingresado por el usuario
-                        String nombreTarea = edtNombreTarea.getText ( ).toString ( ).trim ( );
-                        EditText edtDescTarea = dialogView.findViewById ( R.id.edtDescTarea );
-
+                        String nombreTarea = edtNombreTarea.getText ( ).toString ( ).trim( );
                         // Obtén el nombre de la tarea ingresado por el usuario
-                        String descTarea = edtDescTarea.getText ( ).toString ( ).trim ( );
+                        String descTarea = edtDescTarea.getText ( ).toString ( ).trim( );
+
                         // Verifica que el nombre de la tarea no esté vacío antes de agregarlo
                         if ( !nombreTarea.isEmpty ( ) && !descTarea.isEmpty ( ) ) {
                             // Llama al método addDatos de tu base de datos para agregar la nueva tarea
@@ -113,8 +156,8 @@ public class TareasActivity extends AppCompatActivity {
 
                             if ( tareaAgregada ) {
                                 // Actualiza la lista de tareas en tu ListView o en el adaptador
-                                arrayAdapter.add ( nombreTarea );
-                                arrayAdapter.notifyDataSetChanged ( );
+                                listaString.add ( nombreTarea );
+                                adaptador.notifyDataSetChanged ( );
 
                                 Toast.makeText ( TareasActivity.this,
                                         "Tarea Agregada",
@@ -139,4 +182,75 @@ public class TareasActivity extends AppCompatActivity {
                     }
                 } ).create ( ).show ( );
     }
+    protected void onResume() {
+        super.onResume();
+        // Actualizar la lista de alumnos cada vez que la actividad vuelve a estar en primer plano
+        actualizarListaTareas();
+    }
+
+    @Override
+    protected void onActivityResult ( int requestCode, int resultCode, Intent data ) {
+        super.onActivityResult ( requestCode, resultCode, data );
+
+        if ( requestCode == REQUEST_CODE_BORRAR_TAREA && resultCode == RESULT_OK ) {
+            // Aquí puedes actualizar la lista de materias
+            actualizarListaTareas ( );
+        }
+    }
+
+    private void actualizarListaTareas ( ) {
+        dbHelper = new BaseDatosHelper ( this );
+        Cursor cursorTareas = dbHelper.getTareas ( idClase );
+        listaString.clear ( );
+
+        if ( cursorTareas != null && cursorTareas.moveToFirst ( ) ) {
+            do {
+                idTarea.add ( cursorTareas.getString( 0 ) );
+                String nombTarea = cursorTareas.getString ( 1 );
+                listaString.add ( nombTarea );
+
+            } while ( cursorTareas.moveToNext ( ) );
+
+            if ( adaptador != null ) {
+                adaptador.notifyDataSetChanged ( );
+            } else {
+                adaptador = new MiAdaptador( this, listaString );
+                lvTareas.setAdapter ( adaptador );
+            }
+        } else {
+            adaptador.clear ();
+        }
+    }
+
+
+    static class MiAdaptador extends ArrayAdapter {
+        private final Context context;
+        private final List < String > nombres;
+
+        public MiAdaptador ( Context c, List < String > nombres ) {
+            super ( c, R.layout.lista_materias, R.id.txvNombre, nombres );
+            context = c;
+            this.nombres = nombres;
+
+        }
+
+        @NonNull
+        @Override
+        public View getView (int position, @Nullable View convertView, @NonNull ViewGroup parent ) {
+
+            if ( convertView == null ) {
+                LayoutInflater layoutInflater = ( LayoutInflater ) context.getSystemService ( Context.LAYOUT_INFLATER_SERVICE );
+                convertView = layoutInflater.inflate ( R.layout.lista_tareas, parent, false );
+            }
+
+            // campos a editar
+            TextView nombre = convertView.findViewById ( R.id.txvNombreTarea );
+
+            // asignaciones
+            nombre.setText ( nombres.get ( position ) );
+
+            return convertView;
+        }
+    }
+
 }

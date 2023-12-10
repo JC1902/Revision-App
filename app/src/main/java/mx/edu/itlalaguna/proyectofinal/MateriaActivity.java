@@ -37,9 +37,11 @@ public class MateriaActivity extends AppCompatActivity {
 
 
     public void tareas ( View v ) {
-
+        String materia = getIntent().getStringExtra( "Id" ) ;
         Intent intent = new Intent(this, TareasActivity.class);
-        startActivity ( intent );
+        //Toast.makeText( this, materia.getStringExtra(), Toast.LENGTH_LONG ).show();
+        intent.putExtra( "idMateria", materia );
+        startActivity( intent );
     }
 
     public void alumnos ( View v ) {

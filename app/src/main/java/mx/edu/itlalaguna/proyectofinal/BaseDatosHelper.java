@@ -1,12 +1,15 @@
 package mx.edu.itlalaguna.proyectofinal;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 public class BaseDatosHelper extends SQLiteOpenHelper {
 
@@ -101,6 +104,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     //----------------------------------------------------------------------------------------------
     public boolean addDatosClase ( String idMateria, String nombreClase, String grupo, int horaClase ) {
         SQLiteDatabase db = this.getWritableDatabase ( );
+
         ContentValues contentValues = new ContentValues ( );
         contentValues.put ( "idMateria", idMateria );
         contentValues.put ( "nombreClase", nombreClase );
@@ -136,17 +140,26 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     //----------------------------------------------------------------------------------------------
     public boolean addDatosTarea ( String nombreTarea, String descripcion, String idMateria ) {
         SQLiteDatabase db = this.getWritableDatabase ( );
+        Log.d ( TAG, "No se crea el contentValues");
         ContentValues contentValues = new ContentValues ( );
-        contentValues.put ( "nombreTarea", nombreTarea );
-        contentValues.put ( "descripcion", descripcion );
-        contentValues.put ( "idMateria", idMateria );
 
+        Log.d ( TAG, "No ingresa ningun dato " );
+        contentValues.put ( "nombreTarea", nombreTarea );
+        Log.d ( TAG, "Salida: " + nombreTarea );
+        contentValues.put ( "descripcion", "Salida: " + descripcion );
+        Log.d ( TAG, descripcion );
+        contentValues.put ( "idMateria", idMateria );
+        Log.d ( TAG, "Salida: " +idMateria );
         Log.d ( TAG, "addDatosTarea: Agregando tarea a la tabla tareas" );
 
         long resultado = db.insert ( "tareas", null, contentValues );
 
         // si se insertó correctamente resultado valdrá -1
-        return resultado != -1;
+        if ( resultado == -1 ) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     //----------------------------------------------------------------------------------------------
@@ -210,7 +223,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     //----------------------------------------------------------------------------------------------
     public Cursor getTareaAlumnos ( String idTarea ) {
         SQLiteDatabase db = this.getReadableDatabase ( );
-        String query = "SELECT alumno.*, tareasAlumno.hecha " +
+        String query = "SELECT alumno.numControl, alumno.nombreAlumno, alumno.apellidosAlumno, tareasAlumno.hecha " +
                 "FROM alumno " +
                 "JOIN tareasAlumno ON alumno.numControl = tareasAlumno.numControl " +
                 "WHERE tareasAlumno.idTarea = '" + idTarea + "'";
@@ -316,12 +329,23 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
 
     //----------------------------------------------------------------------------------------------
-    public void deleteTarea ( String idTarea, String nombre ) {
+    public boolean deleteTarea ( String idTarea, String nombre ) {
         SQLiteDatabase db = this.getWritableDatabase ( );
         String query = "DELETE FROM tareas WHERE idTarea = '" + idTarea + "'";
         Log.d ( TAG, "deleteNombre: query: " + query );
         Log.d ( TAG, "deleteNombre: Eliminando " + nombre + " de la tabla tareas." );
-        db.execSQL ( query );
+
+        try {
+            // Intenta ejecutar la eliminación
+            db.execSQL(query);
+            // Si no hay excepciones, significa que la eliminación fue exitosa
+            return true;
+        } catch ( SQLException e) {
+            // Si hay una excepción, imprímela en el registro y devuelve false
+            Log.e(TAG, "Error al eliminar la tarea: " + e.getMessage());
+            return false;
+        }
+
     }
     //----------------------------------------------------------------------------------------------
 }
