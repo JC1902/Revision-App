@@ -66,22 +66,17 @@ public class AlumnosActivity extends AppCompatActivity {
 
 
         Cursor cursorAlumnos = dbHelper.getAlumnosMateria ( clase );
-        // Llenado del ListView
         lvAlumnos = findViewById ( R.id.lvAlumnos );
         if ( cursorAlumnos != null && cursorAlumnos.moveToFirst ( ) ) {
             do {
-                // Obtener el nombre del alumno desde el cursor y agregarlo a la lista
                 String numControl = cursorAlumnos.getString ( 0 );
                 String nombre = cursorAlumnos.getString ( 1 );
                 String apellidos = cursorAlumnos.getString ( 2 );
                 alumnos.add ( numControl + " " + nombre + " " + apellidos );
             } while ( cursorAlumnos.moveToNext ( ) );
-
-            // Inicializar el adaptador con los nombres de lss alumnos
             arrayAdapter = new ArrayAdapter <> ( this, R.layout.lista_alumnos, R.id.txvNombreAlumno, alumnos );
             lvAlumnos.setAdapter ( arrayAdapter );
         } else {
-            // No hay datos en la tabla "alumnos", inicializar el adaptador con datos predeterminados
             arrayAdapter = new ArrayAdapter <> ( this, R.layout.lista_alumnos, R.id.txvNombreAlumno, alumnos );
             lvAlumnos.setAdapter ( arrayAdapter );
         }
@@ -89,31 +84,27 @@ public class AlumnosActivity extends AppCompatActivity {
         lvAlumnos.setOnItemClickListener ( new AdapterView.OnItemClickListener ( ) {
             @Override
             public void onItemClick ( AdapterView < ? > parent, View view, int position, long id ) {
-                // ---- Aqui iria el dirrecionamiento a la materia ----
                 Intent intent = new Intent ( AlumnosActivity.this, AlumnoActivity.class );
                 intent.putExtra ( "idMateria", clase );
                 intent.putExtra ( "Nombre", alumnos.get ( position ) );
-                intent.putExtra ( "NumControl", obtenerNumControl (0).get ( position ) );
+                intent.putExtra ( "NumControl", obtenerNumControl ( 0 ).get ( position ) );
                 startActivity ( intent );
-
-                //Toast.makeText(MainActivity.this, "Ir a Materia : "+materias[ position ], Toast.LENGTH_SHORT).show();
 
             }
         } );
 
     }
 
-    protected void onResume() {
-        super.onResume();
-        // Actualizar la lista de alumnos cada vez que la actividad vuelve a estar en primer plano
-        actualizarListaAlumnos();
+    protected void onResume ( ) {
+        super.onResume ( );
+        actualizarListaAlumnos ( );
     }
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_BORRAR_ALUMNO_MATERIA && resultCode == RESULT_OK) {
-            // Aquí puedes actualizar la lista de alumnos
-            actualizarListaAlumnos();
+    protected void onActivityResult ( int requestCode, int resultCode, Intent data ) {
+        super.onActivityResult ( requestCode, resultCode, data );
+
+        if ( requestCode == REQUEST_CODE_BORRAR_ALUMNO_MATERIA && resultCode == RESULT_OK ) {
+            actualizarListaAlumnos ( );
         }
     }
 
@@ -140,14 +131,16 @@ public class AlumnosActivity extends AppCompatActivity {
         return true;
     }
 
+    //----------------------------------------------------------------------------------------------
     public void fabPrincipalClick ( View view ) {
         animarBoton ( );
     }
 
+    //----------------------------------------------------------------------------------------------
     private List < String > obtenerTodoAlumnos ( ) {
         List < String > nombresAlumnos = new ArrayList <> ( );
         String id = getIntent ( ).getStringExtra ( "Id" );
-        Cursor cursor = dbHelper.getAlumnosMateria ( id );  // Reemplaza con tu método para obtener alumnos
+        Cursor cursor = dbHelper.getAlumnosMateria ( id );
         if ( cursor != null && cursor.moveToFirst ( ) ) {
             do {
                 String nombreAlumno = cursor.getString ( 0 ) + " " + cursor.getString ( 1 ) + " " + cursor.getString ( 2 );
@@ -160,13 +153,14 @@ public class AlumnosActivity extends AppCompatActivity {
         return nombresAlumnos;
     }
 
-    private List < String > obtenerNombresAlumnos ( int op) {
+    //----------------------------------------------------------------------------------------------
+    private List < String > obtenerNombresAlumnos ( int op ) {
         Cursor cursor;
-        if(op==0){
+        if ( op == 0 ) {
             String id = getIntent ( ).getStringExtra ( "Id" );
-            cursor = dbHelper.getAlumnosMateria ( id );  // Reemplaza con tu método para obtener alumnos
-        }else{
-            cursor = dbHelper.getAlumnos ();
+            cursor = dbHelper.getAlumnosMateria ( id );
+        } else {
+            cursor = dbHelper.getAlumnos ( );
         }
         List < String > nombresAlumnos = new ArrayList <> ( );
         if ( cursor != null && cursor.moveToFirst ( ) ) {
@@ -181,14 +175,15 @@ public class AlumnosActivity extends AppCompatActivity {
         return nombresAlumnos;
     }
 
-    private List < String > obtenerNumControl ( int op) {
+    //----------------------------------------------------------------------------------------------
+    private List < String > obtenerNumControl ( int op ) {
         List < String > numControl = new ArrayList <> ( );
         Cursor cursor;
-        if(op==0){
+        if ( op == 0 ) {
             String id = getIntent ( ).getStringExtra ( "Id" );
-            cursor = dbHelper.getAlumnosMateria ( id );  // Reemplaza con tu método para obtener alumnos
-        }else{
-            cursor = dbHelper.getAlumnos ();
+            cursor = dbHelper.getAlumnosMateria ( id );
+        } else {
+            cursor = dbHelper.getAlumnos ( );
         }
         if ( cursor != null && cursor.moveToFirst ( ) ) {
             do {
@@ -202,35 +197,75 @@ public class AlumnosActivity extends AppCompatActivity {
         return numControl;
     }
 
+    //----------------------------------------------------------------------------------------------
     public void agregarAlumnoE ( View v ) {
         String id = getIntent ( ).getStringExtra ( "Id" );
         AlertDialog.Builder builder = new AlertDialog.Builder ( this );
-        // Infla el diseño de la alerta
         View alertaAgregarAlumnoExistente = getLayoutInflater ( ).inflate ( R.layout.alerta_agregar_alumno_existente, null );
-        // Obtiene el Spinner del diseño de la alerta
         Spinner spinnerAlumnos = alertaAgregarAlumnoExistente.findViewById ( R.id.spinNumControl );
-        // Obtiene los nombres de los alumnos desde la base de datos
-        List < String > nombresAlumnos = obtenerNombresAlumnos ( 1);
-        List < String > numControl = obtenerNumControl ( 1);
-        // Crea un ArrayAdapter para el Spinner
+        List < String > nombresAlumnos = obtenerNombresAlumnos ( 1 );
+        List < String > numControl = obtenerNumControl ( 1 );
         ArrayAdapter < String > adapter = new ArrayAdapter <> ( this, android.R.layout.simple_spinner_item, nombresAlumnos );
         adapter.setDropDownViewResource ( android.R.layout.simple_spinner_dropdown_item );
-        // Establece el ArrayAdapter en el Spinner
         spinnerAlumnos.setAdapter ( adapter );
-        builder.setIcon ( R.drawable.itl )
-                .setView ( alertaAgregarAlumnoExistente )
-                .setPositiveButton ( "Guardar", new DialogInterface.OnClickListener ( ) {
-                    @Override
-                    public void onClick ( DialogInterface dialog, int which ) {
-                        // Acciones al hacer clic en Guardar
+        builder.setIcon ( R.drawable.itl ).setView ( alertaAgregarAlumnoExistente ).setPositiveButton ( "Guardar", new DialogInterface.OnClickListener ( ) {
+            @Override
+            public void onClick ( DialogInterface dialog, int which ) {
+                boolean alumnoClase = dbHelper.addDatosClaseAlumno ( clase, numControl.get ( spinnerAlumnos.getSelectedItemPosition ( ) ) );
+                if ( alumnoClase ) {
+                    Cursor cursor = dbHelper.getIdsTareasEnMateria ( clase );
+                    if ( cursor != null && cursor.moveToFirst ( ) ) {
+                        do {
+                            long tarea = cursor.getInt ( 0 );
+                            boolean alumnoTarea = dbHelper.addDatosTareasAlumno ( tarea, numControl.get ( spinnerAlumnos.getSelectedItemPosition ( ) ), 0 );
+                        } while ( cursor.moveToNext ( ) );
 
-                        boolean alumnoClase = dbHelper.addDatosClaseAlumno ( clase, numControl.get ( spinnerAlumnos.getSelectedItemPosition () ) );
+                        cursor.close ( );
+                    }
+                    alumnos.clear ( );
+                    alumnos.addAll ( obtenerTodoAlumnos ( ) );
+                    arrayAdapter.notifyDataSetChanged ( );
+                } else {
+                    Toast.makeText ( AlumnosActivity.this, "Error al agregar el alumno a la clase", Toast.LENGTH_LONG ).show ( );
+                }
+            }
+        } ).setNegativeButton ( "Cancelar", new DialogInterface.OnClickListener ( ) {
+            @Override
+            public void onClick ( DialogInterface dialog, int which ) {
+                dialog.dismiss ( );
+            }
+        } ).create ( ).show ( );
+    }
+
+    //----------------------------------------------------------------------------------------------
+    public void agregarAlumnoN ( View v ) {
+        AlertDialog.Builder builder = new AlertDialog.Builder ( this );
+        View dialogView = getLayoutInflater ( ).inflate ( R.layout.alerta_agregar_alumno, null );
+        builder.setIcon ( R.drawable.itl ).setView ( dialogView ).setPositiveButton ( "Guardar", new DialogInterface.OnClickListener ( ) {
+            @Override
+            public void onClick ( DialogInterface dialog, int which ) {
+                EditText edtNumControl = dialogView.findViewById ( R.id.edtNoControl );
+                EditText edtNombreAlumno = dialogView.findViewById ( R.id.edtNombreAlumno );
+                EditText edtApellidosPat = dialogView.findViewById ( R.id.edtApellidoPat );
+                EditText edtApellidosMat = dialogView.findViewById ( R.id.edtApellidoMat );
+
+                String numControl = edtNumControl.getText ( ).toString ( ).trim ( );
+                String nombreAlumno = edtNombreAlumno.getText ( ).toString ( ).trim ( );
+                String apellidosAlumno = ( edtApellidosPat.getText ( ).toString ( ).trim ( ) ) + " " + ( edtApellidosMat.getText ( ).toString ( ).trim ( ) );
+
+                if ( !numControl.isEmpty ( ) && !nombreAlumno.isEmpty ( ) && !apellidosAlumno.isEmpty ( ) ) {
+                    boolean alumnoAgregado = dbHelper.addDatosAlumno ( numControl, nombreAlumno, apellidosAlumno );
+                    if ( alumnoAgregado ) {
+                        Toast.makeText ( AlumnosActivity.this, "Alumno Agregado", Toast.LENGTH_LONG ).show ( );
+
+
+                        boolean alumnoClase = dbHelper.addDatosClaseAlumno ( clase, numControl );
                         if ( alumnoClase ) {
-                            Cursor cursor = dbHelper.getIdsTareasEnMateria ( clase );  // Reemplaza con tu método para obtener alumnos
+                            Cursor cursor = dbHelper.getIdsTareasEnMateria ( clase );
                             if ( cursor != null && cursor.moveToFirst ( ) ) {
                                 do {
-                                    long tarea=cursor.getInt ( 0 );
-                                    boolean alumnoTarea = dbHelper.addDatosTareasAlumno(tarea,numControl.get ( spinnerAlumnos.getSelectedItemPosition ()),0);
+                                    long tarea = cursor.getInt ( 0 );
+                                    boolean alumnoTarea = dbHelper.addDatosTareasAlumno ( tarea, numControl, 0 );
                                 } while ( cursor.moveToNext ( ) );
 
                                 cursor.close ( );
@@ -239,90 +274,24 @@ public class AlumnosActivity extends AppCompatActivity {
                             alumnos.addAll ( obtenerTodoAlumnos ( ) );
                             arrayAdapter.notifyDataSetChanged ( );
                         } else {
-                            Toast.makeText ( AlumnosActivity.this,
-                                    "Error al agregar el alumno a la clase",
-                                    Toast.LENGTH_LONG ).show ( );
-                        }                    }
-                } )
-                .setNegativeButton ( "Cancelar", new DialogInterface.OnClickListener ( ) {
-                    @Override
-                    public void onClick ( DialogInterface dialog, int which ) {
-                        dialog.dismiss ( );
-                    }
-                } ).create ( ).show ( );
-    }
-
-    public void agregarAlumnoN ( View v ) {
-        AlertDialog.Builder builder = new AlertDialog.Builder ( this );
-
-        // Inflar la vista del diálogo
-        View dialogView = getLayoutInflater ( ).inflate ( R.layout.alerta_agregar_alumno, null );
-        builder.setIcon ( R.drawable.itl )
-                .setView ( dialogView )
-                .setPositiveButton ( "Guardar", new DialogInterface.OnClickListener ( ) {
-                            @Override
-                            public void onClick ( DialogInterface dialog, int which ) {
-                                // Obtener referencias de los elementos de la vista del diálogo
-                                EditText edtNumControl = dialogView.findViewById ( R.id.edtNoControl );
-                                EditText edtNombreAlumno = dialogView.findViewById ( R.id.edtNombreAlumno );
-                                EditText edtApellidosPat = dialogView.findViewById ( R.id.edtApellidoPat );
-                                EditText edtApellidosMat = dialogView.findViewById ( R.id.edtApellidoMat );
-
-                                // Obtener los valores ingresados por el usuario
-                                String numControl = edtNumControl.getText ( ).toString ( ).trim ( );
-                                String nombreAlumno = edtNombreAlumno.getText ( ).toString ( ).trim ( );
-                                String apellidosAlumno = ( edtApellidosPat.getText ( ).toString ( ).trim ( ) ) + " " + ( edtApellidosMat.getText ( ).toString ( ).trim ( ) );
-
-                                // Verificar que los campos no estén vacíos antes de agregar el alumno
-                                if ( !numControl.isEmpty ( ) && !nombreAlumno.isEmpty ( ) && !apellidosAlumno.isEmpty ( ) ) {
-                                    // Llamar al método addDatosAlumno de tu base de datos para agregar el nuevo alumno
-                                    boolean alumnoAgregado = dbHelper.addDatosAlumno ( numControl, nombreAlumno, apellidosAlumno );
-                                    if ( alumnoAgregado ) {
-                                        Toast.makeText ( AlumnosActivity.this,
-                                                "Alumno Agregado",
-                                                Toast.LENGTH_LONG ).show ( );
-
-
-                                        boolean alumnoClase = dbHelper.addDatosClaseAlumno ( clase, numControl );
-                                        if ( alumnoClase ) {
-                                            Cursor cursor = dbHelper.getIdsTareasEnMateria ( clase );  // Reemplaza con tu método para obtener alumnos
-                                            if ( cursor != null && cursor.moveToFirst ( ) ) {
-                                                do {
-                                                    long tarea=cursor.getInt ( 0 );
-                                                    boolean alumnoTarea = dbHelper.addDatosTareasAlumno(tarea,numControl,0);
-                                                } while ( cursor.moveToNext ( ) );
-
-                                                cursor.close ( );
-                                            }
-                                            alumnos.clear ( );
-                                            alumnos.addAll ( obtenerTodoAlumnos ( ) );
-                                            arrayAdapter.notifyDataSetChanged ( );
-                                        } else {
-                                            Toast.makeText ( AlumnosActivity.this,
-                                                    "Error al agregar el alumno a la clase",
-                                                    Toast.LENGTH_LONG ).show ( );
-                                        }
-                                    } else {
-                                        Toast.makeText ( AlumnosActivity.this,
-                                                "Error al agregar el alumno",
-                                                Toast.LENGTH_LONG ).show ( );
-                                    }
-                                } else {
-                                    Toast.makeText ( AlumnosActivity.this,
-                                            "Todos los campos son requeridos",
-                                            Toast.LENGTH_LONG ).show ( );
-                                }
-                            }
+                            Toast.makeText ( AlumnosActivity.this, "Error al agregar el alumno a la clase", Toast.LENGTH_LONG ).show ( );
                         }
-                )
-                .setNegativeButton ( "Cancelar", new DialogInterface.OnClickListener ( ) {
-                    @Override
-                    public void onClick ( DialogInterface dialog, int which ) {
-                        dialog.dismiss ( );
+                    } else {
+                        Toast.makeText ( AlumnosActivity.this, "Error al agregar el alumno", Toast.LENGTH_LONG ).show ( );
                     }
-                } ).create ( ).show ( );
+                } else {
+                    Toast.makeText ( AlumnosActivity.this, "Todos los campos son requeridos", Toast.LENGTH_LONG ).show ( );
+                }
+            }
+        } ).setNegativeButton ( "Cancelar", new DialogInterface.OnClickListener ( ) {
+            @Override
+            public void onClick ( DialogInterface dialog, int which ) {
+                dialog.dismiss ( );
+            }
+        } ).create ( ).show ( );
     }
 
+    //----------------------------------------------------------------------------------------------
     private void actualizarListaAlumnos ( ) {
         dbHelper = new BaseDatosHelper ( this );
         Cursor cursorAlumnos = dbHelper.getAlumnosMateria ( clase );
@@ -330,7 +299,6 @@ public class AlumnosActivity extends AppCompatActivity {
 
         if ( cursorAlumnos != null && cursorAlumnos.moveToFirst ( ) ) {
             do {
-                // Obtener el nombre del alumno desde el cursor y agregarlo a la lista
                 String numControl = cursorAlumnos.getString ( 0 );
                 String nombre = cursorAlumnos.getString ( 1 );
                 String apellidos = cursorAlumnos.getString ( 2 );
@@ -348,6 +316,7 @@ public class AlumnosActivity extends AppCompatActivity {
         }
     }
 
+    //----------------------------------------------------------------------------------------------
     private void animarBoton ( ) {
         if ( isOpen ) {
             fabPrincipal.startAnimation ( girarAtras );

@@ -11,6 +11,7 @@ public class AcercaDeActivity extends AppCompatActivity {
 
     TextView integrantes;
 
+    //----------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +27,7 @@ public class AcercaDeActivity extends AppCompatActivity {
 
     }
 
+    //----------------------------------------------------------------------------------------------
     public void fabRegresarClick ( View v ) {
         finish ();
     }

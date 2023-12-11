@@ -44,6 +44,7 @@ public class TareaActivity extends AppCompatActivity {
     private ArrayList < String > alumnosV;
 
 
+    //----------------------------------------------------------------------------------------------
     @Override
     protected void onCreate ( Bundle savedInstanceState ) {
         super.onCreate ( savedInstanceState );
@@ -63,15 +64,14 @@ public class TareaActivity extends AppCompatActivity {
 
     }
 
+    //----------------------------------------------------------------------------------------------
     private void cargarAlumnos ( ) {
         alumnosP = new ArrayList <> ( );
         alumnosL = new ArrayList <> ( );
         alumnos = new ArrayList <> ( );
-        alumnosControl=new ArrayList <> ( );
+        alumnosControl = new ArrayList <> ( );
 
         Cursor cursorPendientes = dbHelper.getTareaAlumnos ( idTarea );
-
-        // Recorrer el cursor y clasificar las tareas
         if ( cursorPendientes != null && cursorPendientes.moveToFirst ( ) ) {
             do {
                 String no_Control = cursorPendientes.getString ( 0 );
@@ -89,7 +89,6 @@ public class TareaActivity extends AppCompatActivity {
 
             cursorPendientes.close ( );
         }
-        // Inicializar lista
         alumnosV = alumnosP;
         listaString = new ArrayList <> ( alumnosV );
         arrayAdapter = new ArrayAdapter <> ( this, android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, alumnosV );
@@ -123,11 +122,12 @@ public class TareaActivity extends AppCompatActivity {
         return true;
     }
 
+    //----------------------------------------------------------------------------------------------
     public boolean onOptionsItemSelected ( MenuItem item ) {
         int id = item.getItemId ( );
         if ( id == R.id.filtro ) {
-            actualizarTareasEnBaseDeDatos ();
-            cargarAlumnos ();
+            actualizarTareasEnBaseDeDatos ( );
+            cargarAlumnos ( );
             pendientes = !pendientes;
             if ( pendientes ) {
                 filtro.setIcon ( R.drawable.pendiente );
@@ -147,87 +147,71 @@ public class TareaActivity extends AppCompatActivity {
 
             }
 
-        } else
-            return super.onOptionsItemSelected ( item );
+        } else return super.onOptionsItemSelected ( item );
 
 
         return true;
     }
 
+    //----------------------------------------------------------------------------------------------
     @Override
     protected void onPause ( ) {
         super.onPause ( );
-
-        // Realizar la actualización de la base de datos con las tareas pendientes
         if ( pendientes ) {
             actualizarTareasEnBaseDeDatos ( );
         }
     }
 
+    //----------------------------------------------------------------------------------------------
     private void actualizarTareasEnBaseDeDatos ( ) {
-        // Aquí debes implementar la lógica para actualizar las tareas en la base de datos
-
         int idTarea = Integer.parseInt ( getIntent ( ).getStringExtra ( "IdTarea" ) );
 
         for ( int i = 0 ; i < listaAlumnos.getCount ( ) ; i++ ) {
-            // Obtener el nombre de la tarea
             String numControl = alumnosControl.get ( i );
-
-            // Verificar si la tarea está marcada en el ListView
             boolean tareaMarcada = listaAlumnos.isItemChecked ( i );
-
-            // Obtener el estado actual de la tarea en la base de datos
             int estadoActual = tareaMarcada ? 1 : 0;
-
-            // Actualizar la tarea en la base de datos con el estado actual
             dbHelper.updateAlumnoTarea ( estadoActual, numControl, idTarea );
         }
     }
 
+    //----------------------------------------------------------------------------------------------
     public void actualizarLista ( ) {
         arrayAdapter = new ArrayAdapter <> ( this, android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, alumnosV );
         listaAlumnos.setAdapter ( arrayAdapter );
     }
 
+    //----------------------------------------------------------------------------------------------
     public void alertBorrarTarea ( View v ) {
         AlertDialog.Builder builder = new AlertDialog.Builder ( this );
 
-        builder.setIcon ( R.drawable.itl )
-                .setView ( R.layout.alerta_eliminar_tarea )
-                .setNegativeButton ( "Cancelar", new DialogInterface.OnClickListener ( ) {
-                    @Override
-                    public void onClick ( DialogInterface dialog, int which ) {
-                        dialog.dismiss ( );
-                    }
-                } )
-                .setPositiveButton ( "Eliminar", new DialogInterface.OnClickListener ( ) {
-                    @Override
-                    public void onClick ( DialogInterface dialog, int which ) {
-                        borrarTarea ( v );
-                    }
-                } )
-                .create ( )
-                .show ( );
+        builder.setIcon ( R.drawable.itl ).setView ( R.layout.alerta_eliminar_tarea ).setNegativeButton ( "Cancelar", new DialogInterface.OnClickListener ( ) {
+            @Override
+            public void onClick ( DialogInterface dialog, int which ) {
+                dialog.dismiss ( );
+            }
+        } ).setPositiveButton ( "Eliminar", new DialogInterface.OnClickListener ( ) {
+            @Override
+            public void onClick ( DialogInterface dialog, int which ) {
+                borrarTarea ( v );
+            }
+        } ).create ( ).show ( );
     }
 
+    //----------------------------------------------------------------------------------------------
     public void borrarTarea ( View v ) {
         boolean tareaElminada = dbHelper.deleteTarea ( idTarea, nombreTarea );
 
         if ( tareaElminada ) {
-            // Si la materia se borra correctamente, puedes cerrar la actividad actual
-            // Notifica al adaptador que los datos han cambiado
-
             Intent resultIntent = new Intent ( );
             setResult ( RESULT_OK, resultIntent );
             finish ( );
-            // También podrías mostrar un mensaje o realizar otras acciones después de borrar la tarea
         } else {
-            // Muestra un mensaje si hay un error al borrar la tarea
             Toast.makeText ( this, "Error al borrar la tarea", Toast.LENGTH_LONG ).show ( );
         }
 
     }
 
+    //----------------------------------------------------------------------------------------------
     public void seleccionados ( ) {
         Cursor cursorPendientes = dbHelper.getTareaAlumnos ( idTarea );
 
@@ -238,12 +222,6 @@ public class TareaActivity extends AppCompatActivity {
                 do {
                     String idAlumno = cursorPendientes.getString ( 0 );
                     int hecha = cursorPendientes.getInt ( 3 );
-
-                    if ( hecha == 0 ) {
-                        //dbHelper.updateAlumnoTarea(1, idAlumno, idTarea);
-                    } else {
-                        //   dbHelper.updateAlumnoTarea(0, idAlumno, idTarea);
-                    }
                 } while ( cursorPendientes.moveToNext ( ) );
 
             }

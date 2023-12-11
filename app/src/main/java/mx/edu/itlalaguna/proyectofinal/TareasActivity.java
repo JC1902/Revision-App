@@ -36,10 +36,10 @@ import pl.droidsonroids.gif.GifImageView;
 
 public class TareasActivity extends AppCompatActivity {
 
-    List < String > listaString = new ArrayList< String >();
+    List < String > listaString = new ArrayList < String > ( );
     ArrayAdapter < String > arrayAdapter;
     String idClase;
-    List < String > idTarea = new ArrayList< String >();
+    List < String > idTarea = new ArrayList < String > ( );
     ListView lvTareas;
     List < String > lTareas;
     MiAdaptador adaptador;
@@ -47,7 +47,8 @@ public class TareasActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_BORRAR_TAREA = 1;
     private BaseDatosHelper dbHelper;
     private final String[] tareas = { };
-    //MiAdaptador arrayAdapter;
+
+    //----------------------------------------------------------------------------------------------
     @Override
     protected void onCreate ( Bundle savedInstanceState ) {
         super.onCreate ( savedInstanceState );
@@ -57,48 +58,37 @@ public class TareasActivity extends AppCompatActivity {
         setTitle ( "Tareas" );
         Toolbar myToolbar = findViewById ( R.id.tb_tareas );
         setSupportActionBar ( myToolbar );
-
-        //listaString = new ArrayList <> ( Arrays.asList ( tareas ) );
-        //Se obtniene el intent del idMateria
-        idClase = getIntent().getStringExtra( "idMateria" );
-        //Se inicializa el objeto ListView
+        idClase = getIntent ( ).getStringExtra ( "idMateria" );
         ListView listaTareas = findViewById ( R.id.lvAlumnos );
 
         dbHelper = new BaseDatosHelper ( this );
         Cursor cursorTareas = dbHelper.getTareas ( idClase );
-        // Llenado del ListView
         lvTareas = findViewById ( R.id.lvAlumnos );
         if ( cursorTareas != null && cursorTareas.moveToFirst ( ) ) {
             do {
-                // Obtener el nombre de la materia desde el cursor y agregarlo a la lista
                 String nombTarea = cursorTareas.getString ( 1 );
-                //Toast.makeText( this, nombTarea, Toast.LENGTH_LONG ).show();
-                idTarea.add ( cursorTareas.getString( 0 ) );
+                idTarea.add ( cursorTareas.getString ( 0 ) );
                 if ( nombTarea != null ) {
-                    listaString.add(nombTarea);
+                    listaString.add ( nombTarea );
 
-                }else{
-                    Toast.makeText(this, "Esta nulo papito, es el : ", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText ( this, "Esta nulo papito, es el : ", Toast.LENGTH_SHORT ).show ( );
                 }
             } while ( cursorTareas.moveToNext ( ) );
-
-            // Inicializar el adaptador con los nombres de las materias
-            adaptador = new MiAdaptador( this, listaString );
+            adaptador = new MiAdaptador ( this, listaString );
             lvTareas.setAdapter ( adaptador );
         } else {
-            // No hay datos en la tabla "materias", inicializar el adaptador con datos predeterminados
-            adaptador = new MiAdaptador( this, listaString );
+            adaptador = new MiAdaptador ( this, listaString );
             lvTareas.setAdapter ( adaptador );
         }
 
         listaTareas.setOnItemClickListener ( new AdapterView.OnItemClickListener ( ) {
             @Override
             public void onItemClick ( AdapterView < ? > parent, View view, int position, long id ) {
-                // ---- Aqui iria el dirrecionamiento a la materia ----
                 Intent intent = new Intent ( TareasActivity.this, TareaActivity.class );
-                intent.putExtra ( "IdTarea", idTarea.get( position ) );
-                intent.putExtra ( "Nombre", listaString.get( position ) );
-                CharSequence a="a";
+                intent.putExtra ( "IdTarea", idTarea.get ( position ) );
+                intent.putExtra ( "Nombre", listaString.get ( position ) );
+                CharSequence a = "a";
                 startActivity ( intent );
 
             }
@@ -106,6 +96,7 @@ public class TareasActivity extends AppCompatActivity {
 
     }
 
+    //----------------------------------------------------------------------------------------------
     public boolean onCreateOptionsMenu ( Menu menu ) {
         MenuInflater inflater = getMenuInflater ( );
         inflater.inflate ( R.menu.menu_searchview, menu );
@@ -129,87 +120,71 @@ public class TareasActivity extends AppCompatActivity {
         return true;
     }
 
+    //----------------------------------------------------------------------------------------------
     public void agregarTareas ( View v ) {
         View dialogView = getLayoutInflater ( ).inflate ( R.layout.alerta_agregar_tarea, null );
         AlertDialog.Builder builder = new AlertDialog.Builder ( this );
-
-        // Obtén la referencia a los elementos de la vista del diálogo
         EditText edtNombreTarea = dialogView.findViewById ( R.id.edtNombreTarea );
         EditText edtDescTarea = dialogView.findViewById ( R.id.edtDescTarea );
 
-        builder.setIcon ( R.drawable.itl )
-                .setView ( dialogView )
-                .setPositiveButton ( "Guardar", new DialogInterface.OnClickListener ( ) {
-                    @Override
-                    public void onClick ( DialogInterface dialog, int which ) {
+        builder.setIcon ( R.drawable.itl ).setView ( dialogView ).setPositiveButton ( "Guardar", new DialogInterface.OnClickListener ( ) {
+            @Override
+            public void onClick ( DialogInterface dialog, int which ) {
+                String nombreTarea = edtNombreTarea.getText ( ).toString ( ).trim ( );
+                String descTarea = edtDescTarea.getText ( ).toString ( ).trim ( );
+                if ( !nombreTarea.isEmpty ( ) && !descTarea.isEmpty ( ) ) {
+                    long tareaAgregada = dbHelper.addDatosTarea ( nombreTarea, descTarea, idClase );
 
-                        // Obtén el nombre de la tarea ingresado por el usuario
-                        String nombreTarea = edtNombreTarea.getText ( ).toString ( ).trim( );
-                        // Obtén el nombre de la tarea ingresado por el usuario
-                        String descTarea = edtDescTarea.getText ( ).toString ( ).trim( );
-
-                        // Verifica que el nombre de la tarea no esté vacío antes de agregarlo
-                        if ( !nombreTarea.isEmpty ( ) && !descTarea.isEmpty ( ) ) {
-                            // Llama al método addDatos de tu base de datos para agregar la nueva tarea
-                            long tareaAgregada = dbHelper.addDatosTarea ( nombreTarea, descTarea, idClase );
-
-                            if ( tareaAgregada!=-1 ) {
-                                // Actualiza la lista de tareas en tu ListView o en el adaptador
-                                Cursor alumnosMateria= dbHelper.getAlumnosMateria ( idClase);
-                                if ( alumnosMateria != null && alumnosMateria.moveToFirst ( ) ) {
-                                    do {
-                                        // Obtener el nombre de la materia desde el cursor y agregarlo a la lista
-                                        String numControl=alumnosMateria.getString ( 0 );
-                                        dbHelper.addDatosTareasAlumno ( tareaAgregada,numControl,0 );
-                                    } while ( alumnosMateria.moveToNext ( ) );
+                    if ( tareaAgregada != -1 ) {
+                        Cursor alumnosMateria = dbHelper.getAlumnosMateria ( idClase );
+                        if ( alumnosMateria != null && alumnosMateria.moveToFirst ( ) ) {
+                            do {
+                                String numControl = alumnosMateria.getString ( 0 );
+                                dbHelper.addDatosTareasAlumno ( tareaAgregada, numControl, 0 );
+                            } while ( alumnosMateria.moveToNext ( ) );
 
 
-                                    adaptador = new MiAdaptador( TareasActivity.this, listaString );
-                                    lvTareas.setAdapter ( adaptador );
-                                }
-                                idTarea.add ( tareaAgregada+"" );
-                                listaString.add ( nombreTarea );
-                                adaptador.notifyDataSetChanged ( );
-
-                                Toast.makeText ( TareasActivity.this,
-                                        "Tarea Agregada",
-                                        Toast.LENGTH_LONG ).show ( );
-                            } else {
-                                Toast.makeText ( TareasActivity.this,
-                                        "Error al agregar la tarea",
-                                        Toast.LENGTH_LONG ).show ( );
-                            }
-                        } else {
-
-                            Toast.makeText ( TareasActivity.this,
-                                    "No se deben dejar espacios en blanco",
-                                    Toast.LENGTH_LONG ).show ( );
+                            adaptador = new MiAdaptador ( TareasActivity.this, listaString );
+                            lvTareas.setAdapter ( adaptador );
                         }
+                        idTarea.add ( tareaAgregada + "" );
+                        listaString.add ( nombreTarea );
+                        adaptador.notifyDataSetChanged ( );
+
+                        Toast.makeText ( TareasActivity.this, "Tarea Agregada", Toast.LENGTH_LONG ).show ( );
+                    } else {
+                        Toast.makeText ( TareasActivity.this, "Error al agregar la tarea", Toast.LENGTH_LONG ).show ( );
                     }
-                } )
-                .setNegativeButton ( "Cancelar", new DialogInterface.OnClickListener ( ) {
-                    @Override
-                    public void onClick ( DialogInterface dialog, int which ) {
-                        dialog.dismiss ( );
-                    }
-                } ).create ( ).show ( );
-    }
-    protected void onResume() {
-        super.onResume();
-        // Actualizar la lista de alumnos cada vez que la actividad vuelve a estar en primer plano
-        actualizarListaTareas();
+                } else {
+
+                    Toast.makeText ( TareasActivity.this, "No se deben dejar espacios en blanco", Toast.LENGTH_LONG ).show ( );
+                }
+            }
+        } ).setNegativeButton ( "Cancelar", new DialogInterface.OnClickListener ( ) {
+            @Override
+            public void onClick ( DialogInterface dialog, int which ) {
+                dialog.dismiss ( );
+            }
+        } ).create ( ).show ( );
     }
 
+    //----------------------------------------------------------------------------------------------
+    protected void onResume ( ) {
+        super.onResume ( );
+        actualizarListaTareas ( );
+    }
+
+    //----------------------------------------------------------------------------------------------
     @Override
     protected void onActivityResult ( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult ( requestCode, resultCode, data );
 
         if ( requestCode == REQUEST_CODE_BORRAR_TAREA && resultCode == RESULT_OK ) {
-            // Aquí puedes actualizar la lista de materias
             actualizarListaTareas ( );
         }
     }
 
+    //----------------------------------------------------------------------------------------------
     private void actualizarListaTareas ( ) {
         dbHelper = new BaseDatosHelper ( this );
         Cursor cursorTareas = dbHelper.getTareas ( idClase );
@@ -217,7 +192,7 @@ public class TareasActivity extends AppCompatActivity {
 
         if ( cursorTareas != null && cursorTareas.moveToFirst ( ) ) {
             do {
-                idTarea.add ( cursorTareas.getString( 0 ) );
+                idTarea.add ( cursorTareas.getString ( 0 ) );
                 String nombTarea = cursorTareas.getString ( 1 );
                 listaString.add ( nombTarea );
 
@@ -226,19 +201,21 @@ public class TareasActivity extends AppCompatActivity {
             if ( adaptador != null ) {
                 adaptador.notifyDataSetChanged ( );
             } else {
-                adaptador = new MiAdaptador( this, listaString );
+                adaptador = new MiAdaptador ( this, listaString );
                 lvTareas.setAdapter ( adaptador );
             }
         } else {
-            adaptador.clear ();
+            adaptador.clear ( );
         }
     }
 
 
+    //----------------------------------------------------------------------------------------------
     static class MiAdaptador extends ArrayAdapter {
         private final Context context;
         private final List < String > nombres;
 
+        //----------------------------------------------------------------------------------------------
         public MiAdaptador ( Context c, List < String > nombres ) {
             super ( c, R.layout.lista_materias, R.id.txvNombre, nombres );
             context = c;
@@ -246,16 +223,15 @@ public class TareasActivity extends AppCompatActivity {
 
         }
 
+        //----------------------------------------------------------------------------------------------
         @NonNull
         @Override
-        public View getView (int position, @Nullable View convertView, @NonNull ViewGroup parent ) {
+        public View getView ( int position, @Nullable View convertView, @NonNull ViewGroup parent ) {
 
             if ( convertView == null ) {
                 LayoutInflater layoutInflater = ( LayoutInflater ) context.getSystemService ( Context.LAYOUT_INFLATER_SERVICE );
                 convertView = layoutInflater.inflate ( R.layout.lista_tareas, parent, false );
             }
-
-            // campos a editar
             TextView nombre = convertView.findViewById ( R.id.txvNombreTarea );
 
             // asignaciones
