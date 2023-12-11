@@ -228,15 +228,23 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     public Cursor getTareasAsignadasAlumnoEnMateria ( String numControl, String idMateria ) {
         SQLiteDatabase db = this.getReadableDatabase ( );
         String query = "SELECT tareas.idTarea,tareas.nombreTarea,tareas.descripcion, tareasAlumno.hecha " +
-                "FROM tareas " +
+                "FROM tareasAlumno " +
                 "JOIN materias ON tareas.idMateria = materias.idMateria " +
-                "LEFT JOIN tareasAlumno ON tareas.idTarea = tareasAlumno.idTarea " +
+                "JOIN tareas ON tareas.idTarea = tareasAlumno.idTarea " +
                 "AND tareasAlumno.numControl = '" + numControl + "' " +
                 "WHERE materias.idMateria = '" + idMateria + "'";
         Cursor data = db.rawQuery ( query, null );
         return data;
     }
-
+    //----------------------------------------------------------------------------------------------
+    public Cursor getIdsTareasEnMateria(String idMateria) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT idTarea " +
+                "FROM tareas " +
+                "WHERE idMateria = '" + idMateria + "'";
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
     //----------------------------------------------------------------------------------------------
     public void updateAlumnoTarea ( int hecha, String idAlumno, int idTarea ) {
         SQLiteDatabase db = this.getWritableDatabase ( );

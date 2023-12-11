@@ -226,6 +226,15 @@ public class AlumnosActivity extends AppCompatActivity {
 
                         boolean alumnoClase = dbHelper.addDatosClaseAlumno ( clase, numControl.get ( spinnerAlumnos.getSelectedItemPosition () ) );
                         if ( alumnoClase ) {
+                            Cursor cursor = dbHelper.getIdsTareasEnMateria ( clase );  // Reemplaza con tu método para obtener alumnos
+                            if ( cursor != null && cursor.moveToFirst ( ) ) {
+                                do {
+                                    long tarea=cursor.getInt ( 0 );
+                                    boolean alumnoTarea = dbHelper.addDatosTareasAlumno(tarea,numControl.get ( spinnerAlumnos.getSelectedItemPosition ()),0);
+                                } while ( cursor.moveToNext ( ) );
+
+                                cursor.close ( );
+                            }
                             alumnos.clear ( );
                             alumnos.addAll ( obtenerTodoAlumnos ( ) );
                             arrayAdapter.notifyDataSetChanged ( );
@@ -273,8 +282,18 @@ public class AlumnosActivity extends AppCompatActivity {
                                                 "Alumno Agregado",
                                                 Toast.LENGTH_LONG ).show ( );
 
+
                                         boolean alumnoClase = dbHelper.addDatosClaseAlumno ( clase, numControl );
                                         if ( alumnoClase ) {
+                                            Cursor cursor = dbHelper.getIdsTareasEnMateria ( clase );  // Reemplaza con tu método para obtener alumnos
+                                            if ( cursor != null && cursor.moveToFirst ( ) ) {
+                                                do {
+                                                    long tarea=cursor.getInt ( 0 );
+                                                    boolean alumnoTarea = dbHelper.addDatosTareasAlumno(tarea,numControl,0);
+                                                } while ( cursor.moveToNext ( ) );
+
+                                                cursor.close ( );
+                                            }
                                             alumnos.clear ( );
                                             alumnos.addAll ( obtenerTodoAlumnos ( ) );
                                             arrayAdapter.notifyDataSetChanged ( );
