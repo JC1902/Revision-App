@@ -30,6 +30,7 @@ public class AlumnoActivity extends AppCompatActivity {
     List<String> listaString;
     BaseDatosHelper dbHelper;
     ArrayAdapter<String> arrayAdapter;
+    private ArrayList<Integer>tareas;
     private ArrayList<String>tareasV;
     private ArrayList<String>tareasP;
     private ArrayList<String>tareasL;
@@ -38,7 +39,7 @@ public class AlumnoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alumno);
-
+        tareas=new ArrayList <> ( );
         dbHelper = new BaseDatosHelper(this);
         Intent intent = getIntent();
         nombre = intent.getStringExtra("Nombre");
@@ -66,12 +67,13 @@ public class AlumnoActivity extends AppCompatActivity {
         // Recorrer el cursor y clasificar las tareas
         if (cursorPendientes != null && cursorPendientes.moveToFirst()) {
             do {
-                String nombreTarea = cursorPendientes.getString(0);
-                String descripcionTarea = cursorPendientes.getString(1);
-                int hecha = cursorPendientes.getInt(2);
+                int id=cursorPendientes.getInt ( 0 );
+                String nombreTarea = cursorPendientes.getString(1);
+                String descripcionTarea = cursorPendientes.getString(2);
+                int hecha = cursorPendientes.getInt(3);
 
                 String tarea = nombreTarea + " - " + descripcionTarea;
-
+                tareas.add ( id );
                 if (hecha == 0) {
                     tareasP.add(tarea);
                 } else {
@@ -140,6 +142,35 @@ public class AlumnoActivity extends AppCompatActivity {
 
 
         return true;
+    }@Override
+    protected void onPause() {
+        super.onPause();
+
+        // Realizar la actualización de la base de datos con las tareas pendientes
+        if (pendientes) {
+            actualizarTareasEnBaseDeDatos();
+        }
+    }
+    private void actualizarTareasEnBaseDeDatos() {
+        // Aquí debes implementar la lógica para actualizar las tareas en la base de datos
+        String numControl = getIntent().getStringExtra("NumControl");
+
+        for (int i = 0; i < listaTareas.getCount(); i++) {
+            // Obtener el nombre de la tarea
+            int idT=tareas.get ( i );
+            String tarea = (String) listaTareas.getItemAtPosition(i);
+            String[] partes = tarea.split(" - ");
+            String nombreTarea = partes[0];
+
+            // Verificar si la tarea está marcada en el ListView
+            boolean tareaMarcada = listaTareas.isItemChecked(i);
+
+            // Obtener el estado actual de la tarea en la base de datos
+            int estadoActual = tareaMarcada ? 1 : 0;
+
+            // Actualizar la tarea en la base de datos con el estado actual
+            dbHelper.updateAlumnoTarea(estadoActual, numControl, idT);
+        }
     }
 
     public void actualizarLista (  ) {

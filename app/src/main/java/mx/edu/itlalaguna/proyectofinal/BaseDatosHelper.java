@@ -227,7 +227,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     //----------------------------------------------------------------------------------------------
     public Cursor getTareasAsignadasAlumnoEnMateria ( String numControl, String idMateria ) {
         SQLiteDatabase db = this.getReadableDatabase ( );
-        String query = "SELECT tareas.nombreTarea,tareas.descripcion, tareasAlumno.hecha " +
+        String query = "SELECT tareas.idTarea,tareas.nombreTarea,tareas.descripcion, tareasAlumno.hecha " +
                 "FROM tareas " +
                 "JOIN materias ON tareas.idMateria = materias.idMateria " +
                 "LEFT JOIN tareasAlumno ON tareas.idTarea = tareasAlumno.idTarea " +
@@ -238,7 +238,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
     //----------------------------------------------------------------------------------------------
-    public void updateAlumnoTarea ( int hecha, String idAlumno, String idTarea ) {
+    public void updateAlumnoTarea ( int hecha, String idAlumno, int idTarea ) {
         SQLiteDatabase db = this.getWritableDatabase ( );
         String query = "UPDATE tareasAlumno SET hecha = '" + hecha + "' WHERE numControl = '" + idAlumno + "'" +
                 " AND idTarea = '" + idTarea + "'";
