@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#58D8FF</color>
-    <color name="colorAccent">#B40000</color>
+    <color name="colorPrimary">#6200B8</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="letra">#FF000000</color>
@@ -10,4 +9,5 @@
     <color name="start1">#83A3FF</color>
     <color name="end2">#D7EFFF</color>
     <color name="stroke">#000000</color>
+    <color name="colorAccent">#FF0000</color>
 </resources>

@@ -4,4 +4,11 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
+    <style name="MyFloatingActionButtonStyle" parent="Widget.MaterialComponents.FloatingActionButton">
+    <!-- Cambia los atributos según tus preferencias -->
+    <item name="android:backgroundTint">#9458F7</item>
+    <item name="android:width">2dp</item>
+    <item name="android:elevation">6dp</item>
+    <!-- Otros atributos de estilo si es necesario -->
+</style>
 </resources>
