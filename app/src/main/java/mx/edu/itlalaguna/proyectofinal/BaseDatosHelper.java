@@ -41,16 +41,16 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
             "CREATE TABLE alumno ("+columnasAlumno[0]+" TEXT PRIMARY KEY, "+columnasAlumno[1]+" TEXT, "+columnasAlumno[2]+" TEXT)",
             "CREATE TABLE claseAlumno (idMateria TEXT, numControl INTEGER, " +
                     "PRIMARY KEY (idMateria,numControl), " +
-                    "FOREIGN KEY (idMateria) REFERENCES materias(idMateria), " +
-                    "FOREIGN KEY (numControl) REFERENCES alumno(numControl))",
+                    "FOREIGN KEY (idMateria) REFERENCES materias(idMateria) ON DELETE CASCADE, " +
+                    "FOREIGN KEY (numControl) REFERENCES alumno(numControl) ON DELETE CASCADE)",
             "CREATE TABLE tareas (idTarea INTEGER PRIMARY KEY AUTOINCREMENT, nombreTarea TEXT, descripcion TEXT, idMateria TEXT )",
             "CREATE TABLE tareasAlumno (" +
                     " idTarea INTEGER ," +
                     " numControl INTEGER," +
                     " hecha INTEGER, " +
                     " PRIMARY KEY (idTarea,numControl)," +
-                    " FOREIGN KEY (idTarea) REFERENCES tareas(idTarea)," +
-                    " FOREIGN KEY (numControl) REFERENCES alumno(numControl)" +
+                    " FOREIGN KEY (idTarea) REFERENCES tareas(idTarea) ON DELETE CASCADE," +
+                    " FOREIGN KEY (numControl) REFERENCES alumno(numControl) ON DELETE CASCADE" +
                     ")"
     };
 
@@ -328,7 +328,25 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         }
     }
 
+    //----------------------------------------------------------------------------------------------
+    public boolean deleteTareaAlumno ( String numControl,long idTarea  ) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        String query = "DELETE FROM tareasAlumno  WHERE numControl = '" + numControl + "' AND idTarea= '"+idTarea+"'";
+        Log.d ( TAG, "deleteNombre: query: " + query );
+        Log.d ( TAG, "deleteNombre: Eliminando  de la tabla tareasAlumno." );
 
+        try {
+            // Intenta ejecutar la eliminación
+            db.execSQL(query);
+            // Si no hay excepciones, significa que la eliminación fue exitosa
+            return true;
+        } catch ( SQLException e) {
+            // Si hay una excepción, imprímela en el registro y devuelve false
+            Log.e(TAG, "Error al eliminar la tarea: " + e.getMessage());
+            return false;
+        }
+
+    }
     //----------------------------------------------------------------------------------------------
     public boolean deleteTarea ( String idTarea, String nombre ) {
         SQLiteDatabase db = this.getWritableDatabase ( );

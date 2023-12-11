@@ -210,6 +210,15 @@ public class AlumnoActivity extends AppCompatActivity {
     public void borrarAlumno ( View v ) {
         String numControl = getIntent ( ).getStringExtra ( "NumControl" );
         String idMateria = getIntent ( ).getStringExtra ( "idMateria" );
+        Cursor cursor = dbHelper.getIdsTareasEnMateria ( idMateria );  // Reemplaza con tu método para obtener alumnos
+        if ( cursor != null && cursor.moveToFirst ( ) ) {
+            do {
+                long tarea=cursor.getInt ( 0 );
+                boolean alumnoTarea = dbHelper.deleteTareaAlumno (numControl,tarea);
+            } while ( cursor.moveToNext ( ) );
+
+            cursor.close ( );
+        }
         boolean alumnoBorrado = dbHelper.deleteAlumnoClase ( numControl, idMateria );
 
         if ( alumnoBorrado ) {
