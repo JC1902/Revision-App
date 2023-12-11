@@ -34,7 +34,7 @@ public class TareaActivity extends AppCompatActivity {
 
     private final String [] alumnosPendientes   = { "Alumno 2" ,  "Alumno 4" ,  "Alumno 12" , "Alumno 23" , "Alumno 11" ,};
     private ListView listaAlumnos;
-    private  String [] alumnos;
+    private  ArrayList < String > alumnos;
     private BaseDatosHelper dbHelper;
     private String idTarea;
     private String nombreTarea;
@@ -68,21 +68,19 @@ public class TareaActivity extends AppCompatActivity {
         listaAlumnos = findViewById( R.id.lvTareasAlumnos );
         alumnosP = new ArrayList<>();
         alumnosL = new ArrayList<>();
+        alumnos = new ArrayList <> ( );
 
         Cursor cursorPendientes = dbHelper.getTareaAlumnos( idTarea );
 
-        Toast.makeText(this, "idTarea: " + idTarea, Toast.LENGTH_SHORT).show();
         // Recorrer el cursor y clasificar las tareas
         if (cursorPendientes != null && cursorPendientes.moveToFirst()) {
             do {
                 String no_Control = cursorPendientes.getString( 0 );
-                Toast.makeText(this, "num_Control: " + no_Control, Toast.LENGTH_SHORT).show();
-                String nombreAl = cursorPendientes.getString( 1 ) + cursorPendientes.getString( 2 );
-                Toast.makeText(this, "nombre: " + nombreAl, Toast.LENGTH_SHORT).show();
+                String nombreAl = cursorPendientes.getString( 1 ) + " " + cursorPendientes.getString( 2 );
                 int hecha = cursorPendientes.getInt(3);
-                Toast.makeText(this, "hecha: " + hecha, Toast.LENGTH_SHORT).show();
                 String alumno = nombreAl + " - " + no_Control;
 
+                alumnos.add ( alumno );
                 if (hecha == 0) {
                     alumnosP.add( alumno );
                 } else {
@@ -133,13 +131,14 @@ public class TareaActivity extends AppCompatActivity {
             pendientes = !pendientes;
             if( pendientes ){
                 filtro.setIcon ( R.drawable.pendiente );
-
                 alumnosV = alumnosP;
+                seleccionados();
                 actualizarLista();
 
             } else {
                 filtro.setIcon ( R.drawable.revisados );
                 alumnosV = alumnosL;
+                seleccionados();
                 actualizarLista();
 
                 for (int i = 0; i < arrayAdapter.getCount(); i++) {
@@ -154,6 +153,36 @@ public class TareaActivity extends AppCompatActivity {
 
 
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Realizar la actualización de la base de datos con las tareas pendientes
+        if (pendientes) {
+            actualizarTareasEnBaseDeDatos();
+        }
+    }
+    private void actualizarTareasEnBaseDeDatos() {
+        // Aquí debes implementar la lógica para actualizar las tareas en la base de datos
+
+        for (int i = 0; i < listaAlumnos.getCount(); i++) {
+            // Obtener el nombre de la tarea
+            int idT = Integer.parseInt( idTarea );
+            String alumnos = (String) listaAlumnos.getItemAtPosition(i);
+            String[] partes = alumnos.split(" - ");
+            String numControl = partes[ 1 ];
+
+            // Verificar si la tarea está marcada en el ListView
+            boolean tareaMarcada = listaAlumnos.isItemChecked(i);
+
+            // Obtener el estado actual de la tarea en la base de datos
+            int estadoActual = tareaMarcada ? 1 : 0;
+
+            // Actualizar la tarea en la base de datos con el estado actual
+            dbHelper.updateAlumnoTarea(estadoActual, numControl,idT );
+        }
     }
 
     public void actualizarLista (  ) {
@@ -183,7 +212,6 @@ public class TareaActivity extends AppCompatActivity {
     }
 
     public void borrarTarea (View v ){
-        Toast.makeText( this, "idTarea: " + idTarea + " Nombre: " + nombreTarea, Toast.LENGTH_LONG ).show();
         boolean tareaElminada = dbHelper.deleteTarea( idTarea, nombreTarea );
 
         if ( tareaElminada ) {
@@ -200,14 +228,27 @@ public class TareaActivity extends AppCompatActivity {
         }
 
     }
-    public String seleccionados () {
+    public void seleccionados () {
+        Cursor cursorPendientes = dbHelper.getTareaAlumnos( idTarea );
+
         long [] test = listaAlumnos.getCheckItemIds();
         String elementos = "";
-        for (long i: test ) {
-            elementos += " , "+i;
-        }
+        for (long i : test) {
+            if (cursorPendientes != null && cursorPendientes.moveToFirst()) {
+                do {
+                    String idAlumno = cursorPendientes.getString(0);
+                    int hecha = cursorPendientes.getInt(3);
 
-        return  elementos;
+                    if ( hecha == 0 ) {
+                        //dbHelper.updateAlumnoTarea(1, idAlumno, idTarea);
+                    } else {
+                     //   dbHelper.updateAlumnoTarea(0, idAlumno, idTarea);
+                    }
+                } while (cursorPendientes.moveToNext());
+
+                }
+            elementos += " , " + i;
+        }
     }
     //----------------------------------------------------------------------------------------------
 }

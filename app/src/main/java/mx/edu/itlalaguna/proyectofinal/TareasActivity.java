@@ -99,8 +99,6 @@ public class TareasActivity extends AppCompatActivity {
                 intent.putExtra ( "IdTarea", idTarea.get( position ) );
                 intent.putExtra ( "Nombre", listaString.get( position ) );
                 CharSequence a="a";
-
-                Toast.makeText(TareasActivity.this, "idTarea "+idTarea.get ( position )+"", Toast.LENGTH_LONG).show();
                 startActivity ( intent );
 
             }
