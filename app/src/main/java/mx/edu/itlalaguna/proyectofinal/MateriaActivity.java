@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -18,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MateriaActivity extends AppCompatActivity {
 
     public static final int CODIGO_SELECCIONAR_ARCHIVO  = 1944;
+    TextView horario;
+    TextView grupo;
     private BaseDatosHelper dbHelper;
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -25,7 +28,10 @@ public class MateriaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_materia);
         dbHelper = new BaseDatosHelper ( this );
-
+        grupo=findViewById ( R.id.textGrupo );
+        grupo.setText ( getIntent ().getStringExtra ( "Grupo" ) );
+        horario=findViewById ( R.id.textHorario );
+        horario.setText ( getIntent ().getStringExtra ( "Horario" ) );
         Intent intent = getIntent();
 
         setTitle(intent.getStringExtra ("Id")+" "+ intent.getStringExtra("Nombre" ) );

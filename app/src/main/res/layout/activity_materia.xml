@@ -10,61 +10,39 @@
         android:id="@+id/imgBtnAlumnos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="196dp"
         android:background="@null"
         android:onClick="alumnos"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.134"
+        app:layout_constraintHorizontal_bias="0.102"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txvInfoMateria"
+        app:layout_constraintTop_toBottomOf="@+id/tb_materia"
         app:srcCompat="@drawable/alumnosbtn" />
 
     <ImageButton
         android:id="@+id/imgBtnTareas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="116dp"
         android:background="@null"
         android:contentDescription="Tareas"
         android:onClick="tareas"
+        app:layout_constraintBottom_toBottomOf="@+id/imgBtnAlumnos"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.862"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txvInfoMateria"
+        app:layout_constraintTop_toTopOf="@+id/imgBtnAlumnos"
         app:srcCompat="@drawable/tareasbtn" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_materia"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btn_importar"
-        android:layout_width="179dp"
-        android:layout_height="51dp"
-        android:layout_marginBottom="116dp"
-        android:onClick="btnExploradorArchs"
-        android:text="Importar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/txvInfoMateria"
-        android:layout_width="334dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="44dp"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat eros at est molestie, sit amet varius dui aliquam. Etiam lacus sem,"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tb_materia" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton2"
@@ -76,12 +54,35 @@
         android:contentDescription="Borrar"
         android:focusable="true"
         android:onClick="alertBorrarMateria"
-        app:backgroundTint="@color/design_default_color_error"
+        app:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_delete"
         app:tint="#FFFFFF" />
 
+    <TextView
+        android:id="@+id/textGrupo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="Grupo"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tb_materia" />
+
+    <TextView
+        android:id="@+id/textHorario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Horario"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="@+id/textGrupo"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toStartOf="@+id/textGrupo"
+        app:layout_constraintTop_toBottomOf="@+id/textGrupo" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

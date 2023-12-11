@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView lvMaterias;
     private static final int REQUEST_CODE_BORRAR_MATERIA = 1;
-    private boolean isOpen=false;
+    private boolean isOpen = false;
     // Arreglos por Default para pruebas
     List < String > idMaterias = new ArrayList <> ( );
     List < String > nombresMaterias = new ArrayList <> ( );
@@ -93,6 +93,10 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent ( MainActivity.this, MateriaActivity.class );
                 intent.putExtra ( "Id", idMaterias.get ( position ) );
                 intent.putExtra ( "Nombre", nombresMaterias.get ( position ) );
+                intent.putExtra ( "Grupo", "Grupo " + grupo.get ( position ) );
+                int hr = horaInicio.get ( position );
+                String horaFormato = ((hr<10)?"0"+hr:hr )+ ":00 - " + ( ( ( hr + 1 ) < 10 ) ? "0" + ( hr + 1 ) : ( hr + 1 ) ) + ":00";
+                intent.putExtra ( "Horario", horaFormato );
                 startActivityForResult ( intent, REQUEST_CODE_BORRAR_MATERIA );
 
                 //Toast.makeText(MainActivity.this, "Ir a Materia : "+materias[ position ], Toast.LENGTH_SHORT).show();
@@ -101,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         } );
 
     }
+
     @Override
     protected void onActivityResult ( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult ( requestCode, resultCode, data );
@@ -138,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 lvMaterias.setAdapter ( adaptador );
             }
         } else {
-            adaptador.clear ();
+            adaptador.clear ( );
         }
     }
 
@@ -164,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                         String horaMateria = edtHora.getText ( ).toString ( ).trim ( );
 
                         // Verifica que los campos no estén vacíos antes de agregar la materia
-                        if ( !nombreMateria.isEmpty ( ) && !grupoMateria.isEmpty ( ) && (!horaMateria.isEmpty ( )&& TextUtils.isDigitsOnly(horaMateria)) ) {
+                        if ( !nombreMateria.isEmpty ( ) && !grupoMateria.isEmpty ( ) && ( !horaMateria.isEmpty ( ) && TextUtils.isDigitsOnly ( horaMateria ) ) ) {
                             // Llama al método addDatos de tu base de datos para agregar la nueva materia
                             boolean materiaAgregada = dbHelper.addDatosClase ( idClase, nombreMateria, grupoMateria, Integer.parseInt ( horaMateria ) );
 
@@ -187,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } else {
                             Toast.makeText ( MainActivity.this,
-                                    (TextUtils.isDigitsOnly(horaMateria))?"Todos los campos son requeridos":"En el campo hora solo agregar números",
+                                    ( TextUtils.isDigitsOnly ( horaMateria ) ) ? "Todos los campos son requeridos" : "En el campo hora solo agregar números",
                                     Toast.LENGTH_LONG ).show ( );
                         }
                     }
@@ -266,11 +271,11 @@ public class MainActivity extends AppCompatActivity {
 
             // variables
             int hr = horasIni.get ( position );
-            String horaFormato = hr + ":00 - " + ( hr + 1 ) + ":00";
+            String horaFormato = ((hr<10)?"0"+hr:hr )+ ":00 - " + ( ( ( hr + 1 ) < 10 ) ? "0" + ( hr + 1 ) : ( hr + 1 ) ) + ":00";
 
             // asignaciones
             nombre.setText ( nombres.get ( position ) );
-            grupo.setText ( this.grupo.get ( position ) );
+            grupo.setText ( "Grupo " + this.grupo.get ( position ) );
             hora.setText ( horaFormato );
 
             // validacion de hora para el gif
