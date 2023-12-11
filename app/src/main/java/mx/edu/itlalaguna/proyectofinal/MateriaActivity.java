@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -82,6 +83,14 @@ public class MateriaActivity extends AppCompatActivity {
         Intent intent = getIntent ( );
         String idMateria = intent.getStringExtra ( "Id" );
         String nombreMateria = intent.getStringExtra ( "Nombre" );
+
+        Cursor cursorMaterias = dbHelper.getAlumnosMateria ( idMateria);
+        if ( cursorMaterias != null && cursorMaterias.moveToFirst ( ) ) {
+            do {
+                String numControl = cursorMaterias.getString ( 0 );
+                boolean borrarAlumno=dbHelper.deleteClaseAlumno ( idMateria,numControl );
+            } while ( cursorMaterias.moveToNext ( ) );
+        }
         boolean materiaBorrada = dbHelper.deleteClase ( idMateria, nombreMateria );
 
         if ( materiaBorrada ) {

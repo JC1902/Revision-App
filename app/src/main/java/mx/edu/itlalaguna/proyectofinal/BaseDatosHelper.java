@@ -170,63 +170,69 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
     //----------------------------------------------------------------------------------------------
-    public Cursor getAlumnos ( ) {
-        SQLiteDatabase db = this.getReadableDatabase ( );
+    public Cursor getAlumnos() {
+        SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT alumno.* " +
-                "FROM alumno ";
-        Cursor data = db.rawQuery ( query, null );
+                "FROM alumno " +
+                "ORDER BY alumno.nombreAlumno ASC";
+        Cursor data = db.rawQuery(query, null);
         return data;
     }
 
     //----------------------------------------------------------------------------------------------
-    public Cursor getAlumnosMateria ( String idMateria ) {
-        SQLiteDatabase db = this.getReadableDatabase ( );
+    public Cursor getAlumnosMateria(String idMateria) {
+        SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT alumno.* " +
                 "FROM alumno " +
                 "JOIN claseAlumno ON alumno.numControl = claseAlumno.numControl " +
-                "WHERE claseAlumno.idMateria = ?";
-        String[] selectionArgs = { idMateria };
-        Cursor data = db.rawQuery ( query, selectionArgs );
+                "WHERE claseAlumno.idMateria = ? " +
+                "ORDER BY alumno.numControl ASC";
+        String[] selectionArgs = {idMateria};
+        Cursor data = db.rawQuery(query, selectionArgs);
+        return data;
+    }
+
+
+    //----------------------------------------------------------------------------------------------
+    public Cursor getMateria() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM materias ORDER BY nombreClase ASC";
+        Cursor data = db.rawQuery(query, null);
         return data;
     }
 
     //----------------------------------------------------------------------------------------------
-    public Cursor getMateria ( ) {
-        SQLiteDatabase db = this.getReadableDatabase ( );
-        String query = "SELECT * FROM materias ";
-        Cursor data = db.rawQuery ( query, null );
+    public Cursor getTareas(String buscado) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT idtarea, nombreTarea, descripcion FROM tareas WHERE idMateria = '" + buscado + "' ORDER BY nombreTarea ASC";
+        Cursor data = db.rawQuery(query, null);
         return data;
     }
 
     //----------------------------------------------------------------------------------------------
-    public Cursor getTareas ( String buscado ) {
-        SQLiteDatabase db = this.getReadableDatabase ( );
-        String query = "SELECT idtarea,nombreTarea,descripcion FROM tareas where idMateria = '" + buscado + "'";
-        Cursor data = db.rawQuery ( query, null );
-        return data;
-    }
-
-    //----------------------------------------------------------------------------------------------
-    public Cursor getTareaAlumnos ( String idTarea ) {
-        SQLiteDatabase db = this.getReadableDatabase ( );
+    public Cursor getTareaAlumnos(String idTarea) {
+        SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT alumno.numControl, alumno.nombreAlumno, alumno.apellidosAlumno, tareasAlumno.hecha " +
                 "FROM alumno " +
                 "JOIN tareasAlumno ON alumno.numControl = tareasAlumno.numControl " +
-                "WHERE tareasAlumno.idTarea = '" + idTarea + "'";
-        Cursor data = db.rawQuery ( query, null );
+                "WHERE tareasAlumno.idTarea = '" + idTarea + "'" +
+                "ORDER BY alumno.nombreAlumno ASC";
+        Cursor data = db.rawQuery(query, null);
         return data;
     }
 
+
     //----------------------------------------------------------------------------------------------
-    public Cursor getTareasAsignadasAlumnoEnMateria ( String numControl, String idMateria ) {
-        SQLiteDatabase db = this.getReadableDatabase ( );
-        String query = "SELECT tareas.idTarea,tareas.nombreTarea,tareas.descripcion, tareasAlumno.hecha " +
+    public Cursor getTareasAsignadasAlumnoEnMateria(String numControl, String idMateria) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT tareas.idTarea, tareas.nombreTarea, tareas.descripcion, tareasAlumno.hecha " +
                 "FROM tareasAlumno " +
                 "JOIN materias ON tareas.idMateria = materias.idMateria " +
                 "JOIN tareas ON tareas.idTarea = tareasAlumno.idTarea " +
                 "AND tareasAlumno.numControl = '" + numControl + "' " +
-                "WHERE materias.idMateria = '" + idMateria + "'";
-        Cursor data = db.rawQuery ( query, null );
+                "WHERE materias.idMateria = '" + idMateria + "'" +
+                "ORDER BY tareas.nombreTarea ASC";
+        Cursor data = db.rawQuery(query, null);
         return data;
     }
 
@@ -320,7 +326,20 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
             return false;
         }
     }
-
+    //----------------------------------------------------------------------------------------------
+    public boolean deleteClaseAlumno ( String idMateria, String numControl ) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        String query = "DELETE FROM claseAlumno  WHERE numControl = '" + numControl + "' AND idMateria= '" + idMateria + "'";
+        Log.d ( TAG, "deleteNombre: query: " + query );
+        Log.d ( TAG, "deleteNombre: Eliminando " + idMateria + " de la tabla clase." );
+        try {
+            db.execSQL ( query );
+            return true;
+        } catch ( SQLException e ) {
+            Log.e ( TAG, "Error al eliminar la materia: " + e.getMessage ( ) );
+            return false;
+        }
+    }
     //----------------------------------------------------------------------------------------------
     public boolean deleteTareaAlumno ( String numControl, long idTarea ) {
         SQLiteDatabase db = this.getWritableDatabase ( );

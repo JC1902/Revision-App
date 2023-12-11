@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:padding="5dp"
-        android:text="Agregar Alumno"
+        android:text="Agregar Alumno a la base de datos"
+        android:textAlignment="center"
         android:textSize="28sp"
         android:textStyle="bold" />
 
