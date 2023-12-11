@@ -30,7 +30,8 @@ public class AlumnoActivity extends AppCompatActivity {
     List < String > listaString;
     BaseDatosHelper dbHelper;
     ArrayAdapter < String > arrayAdapter;
-    private ArrayList < Integer > tareas;
+    private ArrayList < Integer > tareasPen;
+    private ArrayList < Integer > tareasLis;
     private ArrayList < String > tareasV;
     private ArrayList < String > tareasP;
     private ArrayList < String > tareasL;
@@ -41,7 +42,6 @@ public class AlumnoActivity extends AppCompatActivity {
     protected void onCreate ( Bundle savedInstanceState ) {
         super.onCreate ( savedInstanceState );
         setContentView ( R.layout.activity_alumno );
-        tareas = new ArrayList <> ( );
         dbHelper = new BaseDatosHelper ( this );
         Intent intent = getIntent ( );
         nombre = intent.getStringExtra ( "Nombre" );
@@ -66,6 +66,8 @@ public class AlumnoActivity extends AppCompatActivity {
 
     //----------------------------------------------------------------------------------------------
     private void cargarTareas ( Cursor cursorPendientes ) {
+        tareasPen = new ArrayList <> ( );
+        tareasLis = new ArrayList <> ( );
         tareasP = new ArrayList <> ( );
         tareasL = new ArrayList <> ( );
         if ( cursorPendientes != null && cursorPendientes.moveToFirst ( ) ) {
@@ -76,10 +78,12 @@ public class AlumnoActivity extends AppCompatActivity {
                 int hecha = cursorPendientes.getInt ( 3 );
 
                 String tarea = nombreTarea + " - " + descripcionTarea;
-                tareas.add ( id );
+
                 if ( hecha == 0 ) {
+                    tareasPen.add ( id );
                     tareasP.add ( tarea );
                 } else {
+                    tareasLis.add ( id );
                     tareasL.add ( tarea );
                 }
             } while ( cursorPendientes.moveToNext ( ) );
@@ -128,11 +132,11 @@ public class AlumnoActivity extends AppCompatActivity {
         int id = item.getItemId ( );
         if ( id == R.id.filtro ) {
             actualizarTareasEnBaseDeDatos();
+            pendientes = !pendientes;
             String numControl = getIntent ( ).getStringExtra ( "NumControl" );
             String idMateria = getIntent ( ).getStringExtra ( "idMateria" );
             Cursor cursorPendientes = dbHelper.getTareasAsignadasAlumnoEnMateria ( numControl, idMateria );
             cargarTareas ( cursorPendientes );
-            pendientes = !pendientes;
             if ( pendientes ) {
                 filtro.setIcon ( R.drawable.pendiente );
                 tareasV = tareasP;
@@ -141,7 +145,7 @@ public class AlumnoActivity extends AppCompatActivity {
                 filtro.setIcon ( R.drawable.revisados );
                 tareasV = tareasL;
                 actualizarLista ( );
-                for ( int i = 0 ; i < arrayAdapter.getCount ( ) ; i++ ) {
+                for ( int i = 0 ; i < listaTareas.getCount () ; i++ ) {
                     listaTareas.setItemChecked ( i, true );
                 }
             }
@@ -165,7 +169,13 @@ public class AlumnoActivity extends AppCompatActivity {
         String numControl = getIntent ( ).getStringExtra ( "NumControl" );
 
         for ( int i = 0 ; i < listaTareas.getCount ( ) ; i++ ) {
-            int idT = tareas.get ( i );
+            int idT;
+            if(pendientes){
+                idT= tareasPen.get ( i );
+            }else{
+                idT=tareasLis.get ( i );
+            }
+
             boolean tareaMarcada = listaTareas.isItemChecked ( i );
             int estadoActual = tareaMarcada ? 1 : 0;
             dbHelper.updateAlumnoTarea ( estadoActual, numControl, idT );

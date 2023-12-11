@@ -34,7 +34,8 @@ public class TareaActivity extends AppCompatActivity {
 
     private final String[] alumnosPendientes = { "Alumno 2", "Alumno 4", "Alumno 12", "Alumno 23", "Alumno 11", };
     private ListView listaAlumnos;
-    private ArrayList < String > alumnosControl;
+    private ArrayList < String > alumnosControlP;
+    private ArrayList < String > alumnosControlL;
     private ArrayList < String > alumnos;
     private BaseDatosHelper dbHelper;
     private String idTarea;
@@ -69,7 +70,8 @@ public class TareaActivity extends AppCompatActivity {
         alumnosP = new ArrayList <> ( );
         alumnosL = new ArrayList <> ( );
         alumnos = new ArrayList <> ( );
-        alumnosControl = new ArrayList <> ( );
+        alumnosControlP = new ArrayList <> ( );
+        alumnosControlL = new ArrayList <> ( );
 
         Cursor cursorPendientes = dbHelper.getTareaAlumnos ( idTarea );
         if ( cursorPendientes != null && cursorPendientes.moveToFirst ( ) ) {
@@ -78,12 +80,13 @@ public class TareaActivity extends AppCompatActivity {
                 String nombreAl = cursorPendientes.getString ( 1 ) + " " + cursorPendientes.getString ( 2 );
                 int hecha = cursorPendientes.getInt ( 3 );
                 String alumno = nombreAl + " - " + no_Control;
-                alumnosControl.add ( no_Control );
                 alumnos.add ( alumno );
                 if ( hecha == 0 ) {
                     alumnosP.add ( alumno );
+                    alumnosControlP.add ( no_Control );
                 } else {
                     alumnosL.add ( alumno );
+                    alumnosControlL.add ( no_Control );
                 }
             } while ( cursorPendientes.moveToNext ( ) );
 
@@ -167,7 +170,11 @@ public class TareaActivity extends AppCompatActivity {
         int idTarea = Integer.parseInt ( getIntent ( ).getStringExtra ( "IdTarea" ) );
 
         for ( int i = 0 ; i < listaAlumnos.getCount ( ) ; i++ ) {
-            String numControl = alumnosControl.get ( i );
+            String numControl;
+            if ( pendientes )
+                numControl = alumnosControlP.get ( i );
+            else
+                numControl = alumnosControlL.get ( i );
             boolean tareaMarcada = listaAlumnos.isItemChecked ( i );
             int estadoActual = tareaMarcada ? 1 : 0;
             dbHelper.updateAlumnoTarea ( estadoActual, numControl, idTarea );
