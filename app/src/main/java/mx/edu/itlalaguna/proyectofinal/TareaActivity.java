@@ -57,12 +57,12 @@ public class TareaActivity extends AppCompatActivity {
         idTarea = intent.getStringExtra( "IdTarea" );
         nombreTarea = intent.getStringExtra( "Nombre" );
 
-//        listaTareas = findViewById ( R.id.lvTareasAlumnos);
-//        alumnos = alumnosPendientes;
-//
-//        listaString =new ArrayList<>(Arrays.asList( alumnos ));
-//        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice , android.R.id.text1, alumnos);
-//        listaTareas.setAdapter(arrayAdapter);
+    //        listaTareas = findViewById ( R.id.lvTareasAlumnos);
+    //        alumnos = alumnosPendientes;
+    //
+    //        listaString =new ArrayList<>(Arrays.asList( alumnos ));
+    //        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice , android.R.id.text1, alumnos);
+    //        listaTareas.setAdapter(arrayAdapter);
 
         // Asegúrate de que listaTareas se inicialice correctamente
         listaAlumnos = findViewById( R.id.lvTareasAlumnos );

@@ -98,9 +98,10 @@ public class TareasActivity extends AppCompatActivity {
                 Intent intent = new Intent ( TareasActivity.this, TareaActivity.class );
                 intent.putExtra ( "IdTarea", idTarea.get( position ) );
                 intent.putExtra ( "Nombre", listaString.get( position ) );
-                startActivity ( intent );
+                CharSequence a="a";
 
-                //Toast.makeText(MainActivity.this, "Ir a Materia : "+materias[ position ], Toast.LENGTH_SHORT).show();
+                Toast.makeText(TareasActivity.this, "idTarea "+idTarea.get ( position )+"", Toast.LENGTH_LONG).show();
+                startActivity ( intent );
 
             }
         } );
@@ -152,10 +153,23 @@ public class TareasActivity extends AppCompatActivity {
                         // Verifica que el nombre de la tarea no esté vacío antes de agregarlo
                         if ( !nombreTarea.isEmpty ( ) && !descTarea.isEmpty ( ) ) {
                             // Llama al método addDatos de tu base de datos para agregar la nueva tarea
-                            boolean tareaAgregada = dbHelper.addDatosTarea ( nombreTarea, descTarea, idClase );
+                            long tareaAgregada = dbHelper.addDatosTarea ( nombreTarea, descTarea, idClase );
 
-                            if ( tareaAgregada ) {
+                            if ( tareaAgregada!=-1 ) {
                                 // Actualiza la lista de tareas en tu ListView o en el adaptador
+                                Cursor alumnosMateria= dbHelper.getAlumnosMateria ( idClase);
+                                if ( alumnosMateria != null && alumnosMateria.moveToFirst ( ) ) {
+                                    do {
+                                        // Obtener el nombre de la materia desde el cursor y agregarlo a la lista
+                                        String numControl=alumnosMateria.getString ( 0 );
+                                        dbHelper.addDatosTareasAlumno ( tareaAgregada,numControl,0 );
+                                    } while ( alumnosMateria.moveToNext ( ) );
+
+
+                                    adaptador = new MiAdaptador( TareasActivity.this, listaString );
+                                    lvTareas.setAdapter ( adaptador );
+                                }
+                                idTarea.add ( tareaAgregada+"" );
                                 listaString.add ( nombreTarea );
                                 adaptador.notifyDataSetChanged ( );
 

@@ -138,32 +138,25 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
     //----------------------------------------------------------------------------------------------
-    public boolean addDatosTarea ( String nombreTarea, String descripcion, String idMateria ) {
-        SQLiteDatabase db = this.getWritableDatabase ( );
-        Log.d ( TAG, "No se crea el contentValues");
-        ContentValues contentValues = new ContentValues ( );
+    public long addDatosTarea(String nombreTarea, String descripcionTarea, String idMateria) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("nombreTarea", nombreTarea);
+        values.put("descripcion", descripcionTarea);
+        values.put("idMateria", idMateria);
 
-        Log.d ( TAG, "No ingresa ningun dato " );
-        contentValues.put ( "nombreTarea", nombreTarea );
-        Log.d ( TAG, "Salida: " + nombreTarea );
-        contentValues.put ( "descripcion", "Salida: " + descripcion );
-        Log.d ( TAG, descripcion );
-        contentValues.put ( "idMateria", idMateria );
-        Log.d ( TAG, "Salida: " +idMateria );
-        Log.d ( TAG, "addDatosTarea: Agregando tarea a la tabla tareas" );
+        // Inserta la nueva tarea y obtén el ID generado
+        long idTarea = db.insert("tareas", null, values);
 
-        long resultado = db.insert ( "tareas", null, contentValues );
+        // Cierra la conexión a la base de datos
+        db.close();
 
-        // si se insertó correctamente resultado valdrá -1
-        if ( resultado == -1 ) {
-            return false;
-        } else {
-            return true;
-        }
+        // Devuelve el ID de la tarea recién insertada
+        return idTarea;
     }
 
     //----------------------------------------------------------------------------------------------
-    public boolean addDatosTareasAlumno ( int idTarea, String numControl, int hecha ) {
+    public boolean addDatosTareasAlumno ( long idTarea, String numControl, int hecha ) {
         SQLiteDatabase db = this.getWritableDatabase ( );
         ContentValues contentValues = new ContentValues ( );
         contentValues.put ( "idTarea", idTarea );
